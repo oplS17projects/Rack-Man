@@ -69,6 +69,11 @@ What additionally will be completed before the public presentation?
 | Second Milestone (Sun Apr 16) | Create walls for maze and background graphics implemented  |
 | Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28 ) | Have the game working properly and high scores connected to game  |
 
+| Command | Description |
+| --- | --- |
+| git status | List all new or modified files |
+| git diff | Show file differences that haven't been staged |
+
 ## Group Responsibilities
 Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable.
 
