@@ -65,7 +65,7 @@ Please use Github properly: each individual must make the edits to this file rep
 In the headings below, replace the silly names and GitHub handles with your actual ones.
 
 ### Mohammed Nayeem @mohammednayeem
-will work on high scores, key presses (up, down, left, right), point system.
+will work on high scores, key presses (up, down, left, right), point system.<br/>
 I plan on having a working prototype done when by April 9th.
 
 ### Kevin Fossey @kfozz 
