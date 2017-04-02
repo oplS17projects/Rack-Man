@@ -43,13 +43,12 @@ Also shown is the connection to an external server to record and display a userâ
 
 Lastly, the view will be rendered by the main source code, using Racket Images and our external resources. The userâ€™s inputs will be processed and the view will be updated as necessary.
 
-
 ## Schedule
 
 | Milestone Days | Description |
 | --- | --- |
-| First Milestone (Sun Apr 9) | Have a controlable and interactive pacman and ghost. |
-| Second Milestone (Sun Apr 16) | Create walls for maze and background graphics implemented <br/> Have a good working prototype |
+| First Milestone (Sun Apr 9) | - Have a controlable and interactive pacman and ghost <br/> - Have base of sound working  |
+| Second Milestone (Sun Apr 16) | - Create walls for maze and background graphics implemented <br/> - Have a good working prototype |
 | Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28) | Have the game working properly and high scores connected to game |
 
 ## Group Responsibilities
@@ -65,11 +64,9 @@ Please use Github properly: each individual must make the edits to this file rep
 
 In the headings below, replace the silly names and GitHub handles with your actual ones.
 
-### Susan Scheme @susanscheme
-will write the....
+### Mohammed Nayeem @mohammednayeem
+will work on high scores, key presses (up, down, left, right), point system.
+I plan on having a working prototype done when by April 9th.
 
-### Leonard Lambda @lennylambda
-will work on...
-
-### Frank Funktions @frankiefunk 
-Frank is team lead. Additionally, Frank will work on...   
+### Kevin Fossey @kfozz 
+Kevin is team lead. Additionally, Kevin will work on...   
