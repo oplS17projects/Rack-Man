@@ -5,15 +5,15 @@ We have decided to create our own version of the classic game Pacman using Racke
 
 ### Analysis
 
-# Recursion and Maps & Filters
+###### Recursion and Maps & Filters
 
 We plan on using recursion to get the game universe to be generated. Since the game is constantly being updated this will be the perfect place to use a recursive function. We also plan on using recursion to process user inputs like up, down, left, right.
 
-# Object-Orientation
+###### Object-Orientation
 
 We plan on using an object orientated approach in this project. Since we’re creating a game, we’ll be using making the Rack-Man an object as well as the ghosts.
 
-# State-Modification
+###### State-Modification
 
 We plan on using some sort of state-modification to track when the Rack-Man eats one of the power pellets to have the ghosts turn into a blue ghost which can be eaten.
 
