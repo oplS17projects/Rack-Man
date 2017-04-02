@@ -49,7 +49,7 @@ Lastly, the view will be rendered by the main source code, using Racket Images a
 | --- | --- |
 | First Milestone (Sun Apr 9) | - Have a controlable and interactive pacman and ghost <br/> - Have base of sound working  |
 | Second Milestone (Sun Apr 16) | - Create walls for maze and background graphics implemented <br/> - Have a good working prototype |
-| Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28) | Have the game working properly and high scores connected to game |
+| Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28) | - Have the game working properly<br> - High scores connected to game |
 
 ## Group Responsibilities
 Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable.
