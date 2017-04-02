@@ -20,16 +20,14 @@ We plan on using some sort of state-modification to track when the Rack-Man eats
 ### External Technologies
 We plan on creating a website that holds all the names and scores of each person that plays the game. This information will be stored in a database on a web server. It will be displayed in a way that allows users the ability to view the high score on that specific day as well as all time high score.  
 
-We will also be adding sound to our game too by using a given library.
+We will also be adding sound to our game by using a given library.
 
 ### Deliverable and Demonstration
-Explain exactly what you'll have at the end. What will it be able to do at the live demo?
-
-What exactly will you produce at the end of the project? A piece of software, yes, but what will it do? Here are some questions to think about (and answer depending on your application).
-
-Will it run on some data, like batch mode? Will you present some analytical results of the processing? How can it be re-run on different source data?
-
-Will it be interactive? Can you show it working? This project involves a live demo, so interactivity is good.
+What we plan on having for D Day (Demo Day):
+- Rack-Man moving around in maze
+- Ghosts
+- Power Pellets
+- Show off high scores on a website
 
 ### Evaluation of Results
 How will you know if you are successful? 
