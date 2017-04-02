@@ -18,23 +18,9 @@ We plan on using an object orientated approach in this project. Since we’re cr
 We plan on using some sort of state-modification to track when the Rack-Man eats one of the power pellets to have the ghosts turn into a blue ghost which can be eaten.
 
 ### External Technologies
-You are encouraged to develop a project that connects to external systems. For example, this includes systems that:
+We plan on creating a website that holds all the names and scores of each person that plays the game. This information will be stored in a database on a web server. It will be displayed in a way that allows users the ability to view the high score on that specific day as well as all time high score.  
 
-- retrieve information or publish data to the web
-- generate or process sound
-- control robots or other physical systems
-- interact with databases
-
-If your project will do anything in this category (not only the things listed above!), include this section and discuss.
-
-### Data Sets or other Source Materials
-If you will be working with existing data, where will you get those data from? (Dowload from a website? Access in a database? Create in a simulation you will build? ...)
-
-How will you convert your data into a form usable for your project?  
-
-If you are pulling data from somewhere, actually go download it and look at it before writing the proposal. Explain in some detail what your plan is for accomplishing the necessary processing.
-
-If you are using some other starting materials, explain what they are. Basically: anything you plan to use that isn't code.
+We will also be adding sound to our game too by using a given library.
 
 ### Deliverable and Demonstration
 Explain exactly what you'll have at the end. What will it be able to do at the live demo?
