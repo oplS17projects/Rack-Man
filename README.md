@@ -1,7 +1,7 @@
-# Project Title Goes Here (10 words maximum)
+# Rack-Man
 
 ### Statement
-Describe your project. Why is it interesting? Why is it interesting to you personally? What do you hope to learn? 
+We have decided to create our own version of the classic game Pacman using Racket, and its libraries. The game will feature the classic gameplay of the original, with implemented web based high score tracking. We hope to learn about project organization, as well as experience working on a team based assignment. In addition, we hope to gain experience with utilizing libraries and external resources.
 
 ### Analysis
 Explain what approaches from class you will bring to bear on the project.
