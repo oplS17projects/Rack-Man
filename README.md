@@ -72,8 +72,8 @@ What additionally will be completed before the public presentation?
 | Milestone Days | Description |
 | --- | --- |
 | First Milestone (Sun Apr 9) | Have a controlable and interactive pacman and ghost. |
-| Second Milestone (Sun Apr 16) | Show file differences that haven't been staged |
-| Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28 ) | Show file differences that haven't been staged |
+| Second Milestone (Sun Apr 16) | Create walls for maze and background graphics implemented |
+| Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28 ) | Have the game working properly and high scores connected to game |
 
 ## Group Responsibilities
 Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable.
