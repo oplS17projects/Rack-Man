@@ -69,9 +69,10 @@ What additionally will be completed before the public presentation?
 | Second Milestone (Sun Apr 16) | Create walls for maze and background graphics implemented  |
 | Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28 ) | Have the game working properly and high scores connected to game  |
 
-| Command | Description |
+| Milestone Days | Description |
 | --- | --- |
-| git status | List all new or modified files |
+| First Milestone (Sun Apr 9) | Have a controlable and interactive pacman and ghost. |
+| git diff | Show file differences that haven't been staged |
 | git diff | Show file differences that haven't been staged |
 
 ## Group Responsibilities
