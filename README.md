@@ -4,18 +4,14 @@
 We have decided to create our own version of the classic game Pacman using Racket, and its libraries. The game will feature the classic gameplay of the original, with implemented web based high score tracking. We hope to learn about project organization, as well as experience working on a team based assignment. In addition, we hope to gain experience with utilizing libraries and external resources.
 
 ### Analysis
-Explain what approaches from class you will bring to bear on the project.
 
-Be explicit about the techiques from the class that you will use. For example:
+Recursion and Maps & Filters
+We plan on using recursion to get the game universe to be generated. Since the game is constantly being updated this will be the perfect place to use a recursive function. We also plan on using recursion to process user inputs like up, down, left, right.
+Object-Orientation
+We plan on using an object orientated approach in this project. Since we’re creating a game, we’ll be using making the Rack-Man an object as well as the ghosts.
+State-Modification
+We plan on using some sort of state-modification to track when the Rack-Man eats one of the power pellets to have the ghosts turn into a blue ghost which can be eaten.
 
-- Will you use data abstraction? How?
-- Will you use recursion? How?
-- Will you use map/filter/reduce? How? 
-- Will you use object-orientation? How?
-- Will you use functional approaches to processing your data? How?
-- Will you use state-modification approaches? How? (If so, this should be encapsulated within objects. `set!` pretty much should only exist inside an object.)
-- Will you build an expression evaluator, like we did in the symbolic differentatior and the metacircular evaluator?
-- Will you use lazy evaluation approaches?
 
 The idea here is to identify what ideas from the class you will use in carrying out your project. 
 
