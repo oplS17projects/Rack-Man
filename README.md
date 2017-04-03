@@ -1,7 +1,7 @@
 # Rack-Man
 
 ### Statement
-We have decided to create our own version of the classic game Pacman using Racket, and its libraries. The game will feature the classic gameplay of the original, with an implemented web based high score tracking. We hope to learn about working with larger projects like this, and also gain valuable experience working with github and in a team envrionment.
+We have decided to create our own version of the classic game Pacman using Racket, and its libraries. The game will feature the classic gameplay of the original, with an implemented web based high score tracking. We hope to learn about working with larger projects like this, and gain valuable experience working with GitHub and in a team environment.
 
 ### Analysis
 
@@ -34,7 +34,7 @@ What we plan on having for D Day (Demo Day):
 
 ### Evaluation of Results
 
-If we are able to complete the movement of the game, add ghosts, and get the points system working then this will be a sucessful game. 
+If we can complete the movement of the game, add ghosts, and get the points system working then this will be a successful game. 
 
 ## Architecture Diagram  
 ![Diagram](/architecture.png?raw=true "Diagram")  
@@ -51,7 +51,7 @@ Lastly, the view will be rendered by the main source code, using Racket Images a
 
 | Milestone Days | Description |
 | --- | --- |
-| First Milestone (Sun Apr 9) | - Have a controlable and interactive pacman and ghost <br/> - Have base of sound working  |
+| First Milestone (Sun Apr 9) | - Have a controllable and interactive Pacman and ghost <br/> - Have base of sound working  |
 | Second Milestone (Sun Apr 16) | - Create walls for maze and background graphics implemented <br/> - Have a good working prototype |
 | Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28) | - Have the game working properly<br> - High scores connected to game |
 
@@ -62,4 +62,4 @@ will work on high scores, key presses (up, down, left, right), point system.<br/
 I plan on having a working prototype done when by April 9th.
   
 ### Kevin Fossey @kfozz   
-Kevin is team lead. I plan on creating and sourcing the images and audio for the game. This means I will work with the RSound and Racket Images libraries and work towards utilizizing these libraries to render the graphics portion of the game. Like Mohammed I will also work towards handling user inputs.  
+Kevin is team lead. I plan on creating and sourcing the images and audio for the game. This means I will work with the RSound and Racket Images libraries and work towards utilizing these libraries to render the graphics portion of the game. Like Mohammed, I will also work towards handling user inputs.  
