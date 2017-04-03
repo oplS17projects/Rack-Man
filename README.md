@@ -7,7 +7,7 @@ We have decided to create our own version of the classic game Pacman using Racke
 
 #### Recursion and Maps & Filters
 
-We plan on using recursion to get the game universe to be generated. Since the game is constantly being updated this will be the perfect place to use a recursive function. We also plan on using recursion to process user inputs like up, down, left, right.
+We plan on using recursion to get the game universe to be generated. Since the game is constantly being updated this will be the perfect place to use a recursive function. We also plan on using recursion to process player's inputs like up, down, left, right.
 
 #### Object-Orientation
 
@@ -18,7 +18,7 @@ We plan on using an object orientated approach in this project. Since we’re cr
 We plan on using some sort of state-modification to track when the Rack-Man eats one of the power pellets to have the ghosts turn into a blue ghost which can be eaten.
 
 ### External Technologies
-We plan on creating a website that holds all the names and scores of each person that plays the game. This information will be stored in a database on a web server. It will be displayed in a way that allows users the ability to view the high score on that specific day as well as all time high score.  
+We plan on creating a website that holds all the names and scores of each person that plays the game. This information will be stored in a database on a web server. It will be displayed in a way that allows players the ability to view the high score on that specific day as well as all time high score.  
 
 We will also be adding sound to our game by using a given library.
 
@@ -36,12 +36,12 @@ If we are able to complete the movement of the game, add ghosts, and get the poi
 ## Architecture Diagram
 ![GitHub Image](architecture.png?raw=true "Diagram")
 
-Rack-Man will have a relatively simple architecture. As displayed in the graphic, there will be a main source file, which will contain majority of the code. This is where the functions that control the view and handle user input will be placed. As it stands, this will also include the RSound and Racket Images libraries, and the functions from these that will be required.
-User input will be processed in the main source code as well. Key presses and mouse clicks will be registered and corresponding action will be processed. The graph also displays an external sources block, which represents the use of externally sourced images and audio which will be incorporated into the project.
+Rack-Man will have a relatively simple architecture. As displayed in the graphic, there will be a main source file, which will contain majority of the code. This is where the functions that control the view and handle player's input will be placed. As it stands, this will also include the RSound and Racket Images libraries, and the functions from these that will be required.
+player's input will be processed in the main source code as well. Key presses and mouse clicks will be registered and corresponding action will be processed. The graph also displays an external sources block, which represents the use of externally sourced images and audio which will be incorporated into the project.
 
-Also shown is the connection to an external server to record and display a user’s scores online. This process will simply take the user’s name and score after the player has completed their turn and send it to a web server. The web server will then take that information and store it in a database. Scripts on the web server will then take all the information and display it in a way for the user to be able to see online. 
+Also shown is the connection to an external server to record and display a player's scores online. This process will simply take the player's name and score after the player has completed their turn and send it to a web server. The web server will then take that information and store it in a database. Scripts on the web server will then take all the information and display it in a way for the player to be able to see online. 
 
-Lastly, the view will be rendered by the main source code, using Racket Images and our external resources. The user’s inputs will be processed and the view will be updated as necessary.
+Lastly, the view will be rendered by the main source code, using Racket Images and our external resources. The player's inputs will be processed and the view will be updated as necessary.
 
 ## Schedule
 
