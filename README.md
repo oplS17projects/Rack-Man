@@ -40,7 +40,7 @@ If we are able to complete the movement of the game, add ghosts, and get the poi
 
 ![GitHub Image](architecture.png?raw=true "Diagram")
 
-Rack-Man will have a relatively simple architecture. As displayed in the graphic, there will be a main source file, which will contain majority of the code. This is where the functions that control the view and handle player's input will be placed. As it stands, this will also include the RSound and Racket Images libraries, and the functions from these that will be required.
+Rack-Man will feature a relatively simple architecture. As displayed in the graphic, there will be a main source file, which will contain majority of the code. This is where the functions that control the view and handle player's input will be placed. As it stands, this will also include the RSound and Racket Images libraries, and the functions from these that will be required.
 player's input will be processed in the main source code as well. Key presses and mouse clicks will be registered and corresponding action will be processed. The graph also displays an external sources block, which represents the use of externally sourced images and audio which will be incorporated into the project.
 
 Also shown is the connection to an external server to record and display a player's scores online. This process will simply take the player's name and score after the player has completed their turn and send it to a web server. The web server will then take that information and store it in a database. Scripts on the web server will then take all the information and display it in a way for the player to be able to see online. 
