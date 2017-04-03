@@ -36,9 +36,9 @@ What we plan on having for D Day (Demo Day):
 
 If we are able to complete the movement of the game, add ghosts, and get the points system working then this will be a sucessful game. 
 
-## Architecture Diagram
+## Architecture Diagram  
+![Diagram](/architecture.png?raw=true "Diagram")  
 
-![GitHub Image](architecture.png?raw=true "Diagram")
 
 Rack-Man will feature a relatively simple architecture. As displayed in the graphic, there will be a main source file, which will contain majority of the code. This is where the functions that control the view and handle player's input will be placed. As it stands, this will also include the RSound and Racket Images libraries, and the functions from these that will be required.
 player's input will be processed in the main source code as well. Key presses and mouse clicks will be registered and corresponding action will be processed. The graph also displays an external sources block, which represents the use of externally sourced images and audio which will be incorporated into the project.
