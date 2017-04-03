@@ -1,7 +1,7 @@
 # Rack-Man
 
 ### Statement
-We have decided to create our own version of the classic game Pacman using Racket, and its libraries. The game will feature the classic gameplay of the original, with implemented web based high score tracking. We hope to learn about project organization, as well as experience working on a team based assignment. In addition, we hope to gain experience with utilizing libraries and external resources.
+We have decided to create our own version of the classic game Pacman using Racket, and its libraries. The game will feature the classic gameplay of the original, with an implemented web based high score tracking. We hope to learn about working with larger projects like this, and also gain valuable experience working with github and in a team envrionment.
 
 ### Analysis
 
@@ -21,7 +21,7 @@ We plan on using some sort of state-modification to track when the Rack-Man eats
 
 We plan on creating a website that holds all the names and scores of each person that plays the game. This information will be stored in a database on a web server. It will be displayed in a way that allows players the ability to view the high score on that specific day as well as all time high score.  
 
-We will also be adding sound to our game by using a given library.
+We will also use external sources for the audio that will be implemented into the game
 
 ### Deliverable and Demonstration
 
@@ -55,23 +55,11 @@ Lastly, the view will be rendered by the main source code, using Racket Images a
 | Second Milestone (Sun Apr 16) | - Create walls for maze and background graphics implemented <br/> - Have a good working prototype |
 | Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28) | - Have the game working properly<br> - High scores connected to game |
 
-## Group Responsibilities
-
-Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable.
-
-Please use Github properly: each individual must make the edits to this file representing their own section of work.
-
-**Additional instructions for teams of three:** 
-* Remember that you must have prior written permission to work in groups of three (specifically, an approved `FP3` team declaration submission).
-* The team must nominate a lead. This person is primarily responsible for code integration. This work may be shared, but the team lead has default responsibility.
-* The team lead has full partner implementation responsibilities also.
-* Identify who is team lead.
-
-In the headings below, replace the silly names and GitHub handles with your actual ones.
-
-### Mohammed Nayeem @mohammednayeem
+## Group Responsibilities  
+  
+### Mohammed Nayeem @mohammednayeem  
 will work on high scores, key presses (up, down, left, right), point system.<br/>
 I plan on having a working prototype done when by April 9th.
-
-### Kevin Fossey @kfozz 
-Kevin is team lead. Additionally, Kevin will work on...   
+  
+### Kevin Fossey @kfozz   
+Kevin is team lead. I plan on creating and sourcing the images and audio for the game. This means I will work with the RSound and Racket Images libraries and work towards utilizizing these libraries to render the graphics portion of the game. Like Mohammed I will also work towards handling user inputs.  
