@@ -18,11 +18,13 @@ We plan on using an object orientated approach in this project. Since we’re cr
 We plan on using some sort of state-modification to track when the Rack-Man eats one of the power pellets to have the ghosts turn into a blue ghost which can be eaten.
 
 ### External Technologies
+
 We plan on creating a website that holds all the names and scores of each person that plays the game. This information will be stored in a database on a web server. It will be displayed in a way that allows players the ability to view the high score on that specific day as well as all time high score.  
 
 We will also be adding sound to our game by using a given library.
 
 ### Deliverable and Demonstration
+
 What we plan on having for D Day (Demo Day):
 - Rack-Man moving around in maze
 - Ghosts
@@ -31,9 +33,11 @@ What we plan on having for D Day (Demo Day):
 - Show off high scores on a website
 
 ### Evaluation of Results
+
 If we are able to complete the movement of the game, add ghosts, and get the points system working then this will be a sucessful game. 
 
 ## Architecture Diagram
+
 ![GitHub Image](architecture.png?raw=true "Diagram")
 
 Rack-Man will have a relatively simple architecture. As displayed in the graphic, there will be a main source file, which will contain majority of the code. This is where the functions that control the view and handle player's input will be placed. As it stands, this will also include the RSound and Racket Images libraries, and the functions from these that will be required.
@@ -52,6 +56,7 @@ Lastly, the view will be rendered by the main source code, using Racket Images a
 | Demo Day (Mon Apr 24, Wed Apr 26, or Fri Apr 28) | - Have the game working properly<br> - High scores connected to game |
 
 ## Group Responsibilities
+
 Here each group member gets a section where they, as an individual, detail what they are responsible for in this project. Each group member writes their own Responsibility section. Include the milestones and final deliverable.
 
 Please use Github properly: each individual must make the edits to this file representing their own section of work.
