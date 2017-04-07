@@ -33,8 +33,8 @@
                                 (fourth t) ; y
                                 (rectangle 500 500 "solid" "black")))
       ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen
-      (place-image (text "press shift to start!" 24 "white")
-                   250 250 ; x y
+      (place-image (text "Press Shift to Start!" 24 "white")
+                   250 400 ; x y
                    (place-image SPLASH
                                 250 250
                                 (rectangle 500 500 "outline" "black")))))
@@ -42,7 +42,12 @@
 ; KEY PRESS HANDLER
 ; if the user presses any arrow key, update the state variable for those keys, and reset the state for each other key
 (define (react w x)
-  (cond ((key=? x "rshift") (if(equal? START #f)
+  (cond ((key=? x "shift") (if(equal? START #f)
+                              (begin
+                                (set! START #t)
+                                (list 50 50 75 75))
+                              w))
+        ((key=? x "rshift") (if(equal? START #f)
                               (begin
                                 (set! START #t)
                                 (list 50 50 75 75))
@@ -105,20 +110,21 @@
     (cond ((not (list? w)) w)
           ;HANDLE ARROW KEY COMMANDS
           ((equal? LEFT #t)
-             (list (- (car w) SPEED) (cadr w) (third w) (fourth w)))
+             (if (<= (car w) 11) (list (+ (car w) 0) (cadr w) (third w) (fourth w)) (list (- (car w) SPEED) (cadr w) (third w) (fourth w))))
           ((equal? RIGHT #t)
-             (list (+ (car w) SPEED) (cadr w) (third w) (fourth w)))
+             (if (>= (car w) 489) (list (+ (car w) 0) (cadr w) (third w) (fourth w)) (list (+ (car w) SPEED) (cadr w) (third w) (fourth w))))
           ((equal? DOWN #t)
-             (list (car w) (+ (cadr w) SPEED) (third w) (fourth w)))
+             (if (>= (cadr w) 489) (list (car w) (+ (cadr w) 0) (third w) (fourth w)) (list (car w) (+ (cadr w) SPEED) (third w) (fourth w))))
           ((equal? UP #t)
-             (list (car w) (- (cadr w) SPEED) (third w) (fourth w)))
+             (if (<= (cadr w) 11) (list (car w) (+ (cadr w) 0) (third w) (fourth w)) (list (car w) (- (cadr w) SPEED) (third w) (fourth w))))
           (else w))))
 
 ; WORLD
 (big-bang 0;'(50 50 75 75)
           (on-tick tick-handler)
           (to-draw myWorld)
-          (on-key react))
+          (on-key react)
+          (name "Rack-Man v0.1"))
 
 
 
