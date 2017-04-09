@@ -17,6 +17,7 @@
 (define SPEED 3)
 (define OPEN 0)
 (define SPLASH (bitmap/file "./splash.png"))
+(define END-SCREEN (bitmap/file "./end.png"))
 (define RACKMAN (bitmap/file "./rackman_right_c.png"))
 (define INKY (bitmap/file "./inky.png"))
 
@@ -164,7 +165,7 @@
 (define (high-score w)
   (place-image (text "GAME OVER MAN! GAME OVER!" 24 "white")
                    250 400 ; x y
-                   (place-image SPLASH
+                   (place-image END-SCREEN
                                 250 250
                                 (rectangle 500 500 "outline" "black"))))
 ; WORLD
