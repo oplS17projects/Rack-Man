@@ -19,6 +19,7 @@
 (define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
 (define END-SCREEN (bitmap/file "./end.png"))
+(define MAZE (bitmap/file "./maze_v2.png"))
 (define RACKMAN (bitmap/file "./rackman_right_c.png"))
 (define INKY (bitmap/file "./inky.png"))
 
@@ -33,7 +34,9 @@
                    (place-image (scale/xy .2 .2 INKY) ; place the ghost in the world at the given coordinates
                                 (third t)  ; x
                                 (fourth t) ; y
-                                (rectangle 500 500 "solid" "black")))
+                                (place-image MAZE
+                                             250 250
+                                             (rectangle 500 500 "solid" "black"))))
       ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen
       (place-image (text "Press Shift to Start!" 24 "white")
                    250 400 ; x y
@@ -48,13 +51,13 @@
                               (begin
                                 (play THEME)
                                 (set! START #t)
-                                (list 50 50 75 75))
+                                (list 250 380 250 250))
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
                                 (play THEME)
                                 (set! START #t)
-                                (list 50 50 75 75))
+                                (list 250 380 250 250))
                               w))
         ((key=? x "left") (begin
                             (set! RACKMAN (bitmap/file "./rackman_left_c.png"))
