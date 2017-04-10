@@ -16,6 +16,7 @@
 (define START #f)
 (define SPEED 3)
 (define OPEN 0)
+(define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
 (define END-SCREEN (bitmap/file "./end.png"))
 (define RACKMAN (bitmap/file "./rackman_right_c.png"))
@@ -45,11 +46,13 @@
 (define (react w x)
   (cond ((key=? x "shift") (if(equal? START #f)
                               (begin
+                                (play THEME)
                                 (set! START #t)
                                 (list 50 50 75 75))
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
+                                (play THEME)
                                 (set! START #t)
                                 (list 50 50 75 75))
                               w))
