@@ -160,11 +160,19 @@
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               (else w)))))
-
-; CHECK MAZE
+;;;;;;;;;;;;;;;;;;;; 
+;;;; CHECK MAZE ;;;;
+;;;;;;;;;;;;;;;;;;;;
+;;; wall-piece format (x1 y1 x2 y2)
+;;; x -> Rack-Mans x pos
+;;; y -> Rack-mans y pos
 (define (maze-check x y)
   ; NEEDS TO BE IMPLEMENTED
-  #f)
+  (cond ((equal? LEFT #t) #f)
+        ((equal? RIGHT #t) #f)
+        ((equal? DOWN #t) #f)
+        ((equal? UP #t) #f)
+        (else #f)))
 
 ; GHOST
 (define (ghost d w)
