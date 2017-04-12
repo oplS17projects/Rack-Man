@@ -3,7 +3,7 @@
 ;; Kevin Fossey @kfozz
 ;; Mohammed Nayeem @mohammednayeem
 
-;Libraries
+; Libraries
 (require 2htdp/universe
          2htdp/image
          RSound)
@@ -22,6 +22,31 @@
 (define MAZE (bitmap/file "./maze_v2.png"))
 (define RACKMAN (bitmap/file "./rackman_right_c.png"))
 (define INKY (bitmap/file "./inky.png"))
+
+;;; MAZE WALL COORDINATES ;;;
+(define R-DIR-WALLS
+  (list (list 44 47 44 77) (list 133 47 133 77) (list 240 15 240 77) (list 294 47 294 77)
+        (list 401 47 401 77) (list 489 15 489 155) (list 44 109 44 124) (list 98 109 96 124)
+        (list 133 109 133 218) (list 186 203 186 264) (list 240 125 240 171) (list 294 156 294 171)
+        (list 347 109 347 218) (list 401 156 401 218) (list 401 109 401 124)))
+(define L-DIR-WALLS
+  (list (list 96 47 96 77) (list 203 47 203 77) (list 257 15 257 77) (list 364 47 364 77)
+        (list 453 47 453 77) (list 96 156 96 218) (list 96 109 96 124) (list 150 109 150 218)
+        (list 203 156 203 171) (list 257 125 257 171) (list 364 109 364 218) (list 453 109 453 124)
+        (list 310 203 310 264) (list 310 109 310 124) (list 7 15 7 155)))
+(define D-DIR-WALLS
+  (list (list 44 47 96 47) (list 133 47 203 47) (list 294 47 354 47) (list 401 47 453 47)
+        (list 44 109 96 109) (list 133 109 150 109) (list 186 109 310 109) (list 347 109 364 109)
+        (list 401 109 453 109) (list 8 156 96 156) (list 151 156 203 156) (list 294 156 346 156)
+        (list 401 156 489 156) (list 186 203 310 203)))
+(define U-DIR-WALLS
+  (list (list 44 77 96 77) (list 133 77 203 77) (list 294 77 364 77) (list 401 77 453 77)
+        (list 44 124 96 124) (list 0 218 96 218) (list 133 218 150 218) (list 151 171 203 171)
+        (list 186 264 310 264) (list 186 124 310 124) (list 240 171 257 171) (list 296 171 346 171)
+        (list 401 218 499 218) (list 347 218 364 218) (list 401 124 453 124) (list 240 77 247 77)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ; DRAW THE WORLD
 ; take in the world state 't' and render the appropriate scene
@@ -119,22 +144,27 @@
         (cond ((not (list? w)) w)
               ;HANDLE ARROW KEY COMMANDS
               ((equal? LEFT #t)
-               (if (<= (car w) 11) 
-                   (list (+ (car w) 0) (cadr w) (ghost "x" w) (ghost "y" w))
+               (if (equal? (maze-check (car w) (cadr w)) #t) 
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
               ((equal? RIGHT #t)
-               (if (>= (car w) 489)
-                   (list (+ (car w) 0) (cadr w) (ghost "x" w) (ghost "y" w))
+               (if (equal? (maze-check (car w) (cadr w)) #t)
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
               ((equal? DOWN #t)
-               (if (>= (cadr w) 489)
-                   (list (car w) (+ (cadr w) 0) (ghost "x" w) (ghost "y" w))
+               (if (equal? (maze-check (car w) (cadr w)) #t)
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (+ (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               ((equal? UP #t)
-               (if (<= (cadr w) 11)
-                   (list (car w) (+ (cadr w) 0) (ghost "x" w) (ghost "y" w))
+               (if (equal? (maze-check (car w) (cadr w)) #t)
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               (else w)))))
+
+; CHECK MAZE
+(define (maze-check x y)
+  ; NEEDS TO BE IMPLEMENTED
+  #f)
 
 ; GHOST
 (define (ghost d w)
