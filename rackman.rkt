@@ -17,7 +17,7 @@
 (define SPEED 2)
 (define GHOST-SPEED 0)
 (define DEBUGGER 0)
-(define OFFSET 10)
+(define OFFSET 12)
 (define OPEN 0)
 (define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
@@ -36,7 +36,7 @@
         (list 44 344 44 358) (list 79 358 79 405) (list 133 344 133 358) (list 294 344 294 358)
         (list 401 344 401 405) (list 8 390 8 405) (list 44 437 44 452) (list 133 390 133 437)
         (list 186 390 186 405) (list 240 405 240 452) (list 294 437 294 452) (list 347 390 347 437)
-        (list 454 389 454 405) (list 186 109 186 124) (list 6 250 6 311)))
+        (list 454 389 454 405) (list 186 109 186 124) (list 6 250 6 311) (list 489 312 489 483)))
 (define L-DIR-WALLS
   (list (list 96 47 96 77) (list 203 47 203 77) (list 257 15 257 77) (list 364 47 364 77)
         (list 453 47 453 77) (list 96 156 96 218) (list 96 109 96 124) (list 150 109 150 218)
@@ -46,7 +46,7 @@
         (list 96 344 96 405) (list 203 344 203 358) (list 364 344 364 358) (list 418 358 418 405)
         (list 453 344 453 358) (list 43 390 43 405) (list 203 437 203 452) (list 150 390 150 437)
         (list 310 390 310 405) (list 257 405 257 452) (list 453 437 453 452) (list 364 390 364 437)
-        (list 490 390 490 405) (list 96 250 96 311)))
+        (list 490 390 490 405) (list 96 250 96 311) (list 8 312 8 483)))
 (define D-DIR-WALLS
   (list (list 44 47 96 47) (list 133 47 203 47) (list 294 47 354 47) (list 401 47 453 47)
         (list 44 109 96 109) (list 133 109 150 109) (list 186 109 310 109) (list 347 109 364 109)
@@ -55,7 +55,7 @@
         (list 347 250 364 250) (list 401 250 488 250) (list 44 344 96 344) (list 133 344 203 344)
         (list 294 344 364 344) (list 401 344 453 344) (list 8 390 43 390) (list 44 437 203 437)
         (list 133 390 150 390) (list 186 390 310 390) (list 294 437 453 437) (list 347 390 364 390)
-        (list 454 390 490 390)(list 6 250 96 250)))
+        (list 454 390 490 390)(list 6 250 96 250) (list 8 483 489 483)))
 (define U-DIR-WALLS
   (list (list 44 77 96 77) (list 133 77 203 77) (list 294 77 364 77) (list 401 77 453 77)
         (list 44 124 96 124) (list 0 218 96 218) (list 133 218 150 218) (list 151 171 203 171)
@@ -65,7 +65,7 @@
         (list 401 311 489 311) (list 44 358 79 358) (list 79 405 96 405) (list 133 358 203 358)
         (list 294 358 361 358) (list 418 358 453 358) (list 401 405 418 405) (list 8 405 43 405)
         (list 44 452 203 452) (list 186 405 310 405) (list 240 452 257 452) (list 294 452 453 452)
-        (list 454 405 490 405) (list 6 311 96 311)))
+        (list 454 405 490 405) (list 6 311 96 311) (list 8 15 489 15)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -98,13 +98,13 @@
                               (begin
                                 (play THEME)
                                 (set! START #t)
-                                (list 250 375 250 250))
+                                (list 250 374 250 250)) ;; starting position of RackMan and Ghost
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
                             ;;    (play THEME)
                                 (set! START #t)
-                                (list 250 375 250 250))
+                                (list 250 374 250 250))  ;; starting position of RackMan and Ghost
                               w))
         ((key=? x "left") (begin
                             (set! RACKMAN (bitmap/file "./rackman_left_c.png"))
@@ -166,19 +166,25 @@
         (cond ((not (list? w)) w)
               ;HANDLE ARROW KEY COMMANDS
               ((equal? LEFT #t)
-               (if (equal? (maze-check (car w) (cadr w) L-DIR-WALLS) #t) 
+               (if (equal? (maze-check (car w) (cadr w) L-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
-                   (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
+                   ;(list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
+                   ; move to the opposite end when passing through the left opening
+                   (cond ((<= (car w) 0) (list (+ (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))
+                         (else (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))
               ((equal? RIGHT #t)
-               (if (equal? (maze-check (car w) (cadr w) R-DIR-WALLS) #t)
+               (if (equal? (maze-check (car w) (cadr w) R-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
-                   (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
+                   ;(list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
+                   ; move to the opposite end when passing through the right opening
+                   (cond ((>= (car w) 500) (list (- (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))
+                         (else (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))
               ((equal? DOWN #t)
-               (if (equal? (maze-check (car w) (cadr w) D-DIR-WALLS) #t)
+               (if (equal? (maze-check (car w) (cadr w) D-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (+ (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               ((equal? UP #t)
-               (if (equal? (maze-check (car w) (cadr w) U-DIR-WALLS) #t)
+               (if (equal? (maze-check (car w) (cadr w) U-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               (else w)))))
@@ -188,12 +194,15 @@
 ;;; x -> Rack-Mans x pos
 ;;; y -> Rack-mans y pos
 ;;; lst -> The list of walls that Rack-man could run into given his current direction
+;;; using foldl to check Rack-Mans x or y (check x if moving left/right, check y if moving up/down)
+;;  against each element in the wall list. If a match is found, 
+;;; Returns #t if a collision is detected
+;;; Returns #f if no collision is detected
 (define (maze-check x y lst)
-  ; INCOMPLETE
   (cond ((equal? LEFT #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                         ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall)))
-                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET)))
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                         ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
                                               (begin
                                                (when (equal? DEBUGGER 1) 
 						(begin(display "LEFT: (")
@@ -218,9 +227,9 @@
          #f
          lst))
         ((equal? RIGHT #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                         ((and (>= x (- (first wall) OFFSET)) (<= x (first wall)))
-                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET)))
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                         ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
                                               (begin
                                                 (when (equal? DEBUGGER 1) 
 						(begin(display "RIGHT: (")
@@ -245,10 +254,10 @@
          #f
          lst))
         ((equal? DOWN #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((>= y (- (second wall) OFFSET))
-                                         ((and (>= y (- (second wall) OFFSET)) (<= y (second wall)))
-                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET)))
+                                         ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
                                               (begin
                                                  (when (equal? DEBUGGER 1) 
 						(begin(display "DOWN: (")
@@ -272,10 +281,10 @@
          #f
          lst))
         ((equal? UP #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((<= y (+ (second wall) 12))
-                                         ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall)))
-                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET)))
+                                         ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
                                               (begin
                                                 (when (equal? DEBUGGER 1) 
 						(begin(display "UP: (")
