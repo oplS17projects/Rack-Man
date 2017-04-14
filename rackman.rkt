@@ -16,7 +16,7 @@
 (define START #f)
 (define SPEED 2)
 (define GHOST-SPEED 0)
-(define OFFSET 5)
+(define OFFSET 12)
 (define OPEN 0)
 (define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
@@ -192,24 +192,30 @@
   (cond ((equal? LEFT #t) ;#f)
          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
                                          ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall)))
+                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET)))
+                                              #t
+                                              #f))
                                          ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
-                                          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                                                    ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
-                                                                    (else #f)))
-                                                 #f
-                                                 lst))
+                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
+                                         ;                           (else #f)))
+                                         ;        #f
+                                         ;        lst))
                                          (else #f)))
          #f
          lst))
         ((equal? RIGHT #t) ;#f)
          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
                                          ((and (>= x (- (first wall) OFFSET)) (<= x (first wall)))
+                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET)))
+                                              #t
+                                              #f))
                                          ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
-                                          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                                                    ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
-                                                                    (else #f)))
-                                                 #f
-                                                 lst))
+                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
+                                         ;                           (else #f)))
+                                         ;        #f
+                                         ;        lst))
                                          (else #f)))
          #f
          lst))
@@ -217,11 +223,14 @@
          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
                                          ;((>= y (- (second wall) OFFSET))
                                          ((and (>= y (- (second wall) OFFSET)) (<= y (second wall)))
-                                          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                                                          ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
-                                                                          (else #f)))
-                                                 #f
-                                                 lst))
+                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET)))
+                                              #t
+                                              #f))
+                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                          ;                                ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
+                                          ;                                (else #f)))
+                                          ;       #f
+                                          ;       lst))
                                          (else #f)))
          #f
          lst))
@@ -229,11 +238,14 @@
          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
                                          ;((<= y (+ (second wall) 12))
                                          ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall)))
-                                          (foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                                                    ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
-                                                                    (else #f)))
-                                                 #f
-                                                 lst))
+                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET)))
+                                              #t
+                                              #f))
+                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                          ;                          ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
+                                          ;                          (else #f)))
+                                          ;       #f
+                                          ;       lst))
                                          (else #f)))
          #f
          lst))
