@@ -14,7 +14,9 @@
 (define DOWN #f)
 (define UP #f)
 (define START #f)
-(define SPEED 3)
+(define SPEED 2)
+(define GHOST-SPEED 0)
+(define OFFSET 12)
 (define OPEN 0)
 (define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
@@ -95,13 +97,13 @@
                               (begin
                                 (play THEME)
                                 (set! START #t)
-                                (list 250 380 250 250))
+                                (list 250 375 250 250))
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
                                 (play THEME)
                                 (set! START #t)
-                                (list 250 380 250 250))
+                                (list 250 375 250 250))
                               w))
         ((key=? x "left") (begin
                             (set! RACKMAN (bitmap/file "./rackman_left_c.png"))
@@ -163,45 +165,101 @@
         (cond ((not (list? w)) w)
               ;HANDLE ARROW KEY COMMANDS
               ((equal? LEFT #t)
-               (if (equal? (maze-check (car w) (cadr w)) #t) 
+               (if (equal? (maze-check (car w) (cadr w) L-DIR-WALLS) #t) 
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
               ((equal? RIGHT #t)
-               (if (equal? (maze-check (car w) (cadr w)) #t)
+               (if (equal? (maze-check (car w) (cadr w) R-DIR-WALLS) #t)
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
               ((equal? DOWN #t)
-               (if (equal? (maze-check (car w) (cadr w)) #t)
+               (if (equal? (maze-check (car w) (cadr w) D-DIR-WALLS) #t)
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (+ (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               ((equal? UP #t)
-               (if (equal? (maze-check (car w) (cadr w)) #t)
+               (if (equal? (maze-check (car w) (cadr w) U-DIR-WALLS) #t)
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               (else w)))))
 ;;;;;;;;;;;;;;;;;;;; 
 ;;;; CHECK MAZE ;;;;
 ;;;;;;;;;;;;;;;;;;;;
-;;; wall-piece format (x1 y1 x2 y2)
 ;;; x -> Rack-Mans x pos
 ;;; y -> Rack-mans y pos
-(define (maze-check x y)
-  ; NEEDS TO BE IMPLEMENTED
-  (cond ((equal? LEFT #t) #f)
-        ((equal? RIGHT #t) #f)
-        ((equal? DOWN #t) #f)
-        ((equal? UP #t) #f)
+;;; lst -> The list of walls that Rack-man could run into given his current direction
+(define (maze-check x y lst)
+  ; INCOMPLETE
+  (cond ((equal? LEFT #t) ;#f)
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall)))
+                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET)))
+                                              #t
+                                              #f))
+                                         ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
+                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
+                                         ;                           (else #f)))
+                                         ;        #f
+                                         ;        lst))
+                                         (else #f)))
+         #f
+         lst))
+        ((equal? RIGHT #t) ;#f)
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ((and (>= x (- (first wall) OFFSET)) (<= x (first wall)))
+                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET)))
+                                              #t
+                                              #f))
+                                         ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
+                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
+                                         ;                           (else #f)))
+                                         ;        #f
+                                         ;        lst))
+                                         (else #f)))
+         #f
+         lst))
+        ((equal? DOWN #t) ;#f)
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ;((>= y (- (second wall) OFFSET))
+                                         ((and (>= y (- (second wall) OFFSET)) (<= y (second wall)))
+                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET)))
+                                              #t
+                                              #f))
+                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                          ;                                ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
+                                          ;                                (else #f)))
+                                          ;       #f
+                                          ;       lst))
+                                         (else #f)))
+         #f
+         lst))
+        ((equal? UP #t) ;#f)
+         (foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                         ;((<= y (+ (second wall) 12))
+                                         ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall)))
+                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET)))
+                                              #t
+                                              #f))
+                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
+                                          ;                          ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
+                                          ;                          (else #f)))
+                                          ;       #f
+                                          ;       lst))
+                                         (else #f)))
+         #f
+         lst))
         (else #f)))
 
 ; GHOST
 (define (ghost d w)
   (if (equal? d "x")
       (if (< (third w) (first w))
-          (+ (third w) 1)
-          (- (third w) 1))
+          (+ (third w) GHOST-SPEED)
+          (- (third w) GHOST-SPEED))
       (if (< (fourth w) (second w))
-          (+ (fourth w) 1)
-          (- (fourth w) 1))))
+          (+ (fourth w) GHOST-SPEED)
+          (- (fourth w) GHOST-SPEED))))
 
 ; GAME OVER MAN! GAME OVER!
 (define (game-over w)
@@ -232,7 +290,7 @@
                                 250 250
                                 (rectangle 500 500 "outline" "black"))))
 ; WORLD
-(big-bang 0;'(50 50 75 75)
+(big-bang 0
           (on-tick tick-handler)
           (to-draw myWorld)
           (on-key react)
