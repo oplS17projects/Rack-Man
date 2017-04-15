@@ -26,7 +26,7 @@
 (define MAZE (bitmap/file "./maze_v2.png"))
 (define RACKMAN (bitmap/file "./rackman_right_c.png"))
 (define INKY (bitmap/file "./inky.png"))
-(define PELLET (circle 5 "solid" "white"))
+(define PELLET (circle 3 "solid" "white"))
 (define SCENE (rectangle 500 500 "solid" "black"))
 
 ;;; MAZE WALL COORDINATES ;;;
@@ -76,14 +76,28 @@
 
 (define (build-pel-xy x y)
   (define (builder-xy x y count lst)
-    (cond ((and (>= count 0) (<= count 7))
-           (builder-xy (+ x 25) y (add1 count) (append lst (list (make-posn x y))))) ;
+          ;;;;;;;;;;;; ROW 1 ;;;;;;;;;;;;
+    (cond ((and (>= count 0) (< count 12))
+           (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y)))))
+          ((and (>= count 12) (<= count 24))
+           (if (= count 12)
+               (builder-xy (+ x 37) y (add1 count) (append lst (list (make-posn (+ x 37) y))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; ROW 2 ;;;;;;;;;;;;
+          ((and (> count 24) (<= count 51))
+           (if (= count 25)
+               (builder-xy 25 (+ y 60) (add1 count) (append lst (list (make-posn 25 (+ y 60)))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ;;((and (> count 16) (<= count 24))
+          ;; (if (= count 17)
+          ;;     (builder-xy 25 (+ y 30) (add1 count) (append lst (list (make-posn x y))))   
+          ;;     (builder-xy (+ x 25) y (add1 count) (append lst (list (make-posn x y))))))
           (else lst)))
   (builder-xy x y 0 '()))
 
 (define (build-pel-img img)
   (define (builder-img count img lst)
-    (if (> count 7)
+    (if (> count 51)
         lst
         (builder-img (add1 count) img (append lst (list img)))))
   (builder-img 0 img '()))
@@ -131,8 +145,8 @@
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
-                                (display PEL-POS)
-                                (display PEL-IMG)
+                                ;(display PEL-POS)
+                                ;(display PEL-IMG)
                             ;;    (play THEME)
                                 (set! START #t)
                                 (list 250 374 250 250))  ;; starting position of RackMan and Ghost
