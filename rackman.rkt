@@ -77,16 +77,36 @@
 (define (build-pel-xy x y)
   (define (builder-xy x y count lst)
           ;;;;;;;;;;;; ROW 1 ;;;;;;;;;;;;
-    (cond ((and (>= count 0) (< count 12))
+    (cond ((and (>= count 0) (< count 12)) ;; 12 Pellets
            (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y)))))
           ((and (>= count 12) (<= count 24))
            (if (= count 12)
                (builder-xy (+ x 37) y (add1 count) (append lst (list (make-posn (+ x 37) y))))   
                (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
           ;;;;;;;;;;;; ROW 2 ;;;;;;;;;;;;
-          ((and (> count 24) (<= count 51))
+          ((and (> count 24) (<= count 51)) ;; 27 pellets
            (if (= count 25)
-               (builder-xy 25 (+ y 60) (add1 count) (append lst (list (make-posn 25 (+ y 60)))))   
+               (builder-xy  43 (+ y 55) (add1 count) (append lst (list (make-posn 43 (+ y 55)))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; COLLUM 1 ;;;;;;;;;;;;
+          ((and (> count 51) (<= count 58)) ;; 7 pellets
+           (if (= count 52)
+               (builder-xy 25 53 (add1 count) (append lst (list (make-posn 25 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; COLLUM 2 ;;;;;;;;;;;;
+          ((and (> count 58) (<= count 80)) ;; 22 pellets
+           (if (= count 59)
+               (builder-xy 115 53 (add1 count) (append lst (list (make-posn 115 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; COLLUM 3 ;;;;;;;;;;;;
+          ((and (> count 80) (<= count 102)) ;; 22 pellets
+           (if (= count 81)
+               (builder-xy 386 53 (add1 count) (append lst (list (make-posn 386 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; ROW 3 ;;;;;;;;;;;;
+          ((and (> count 102) (<= count 129)) ;; 27 pellets
+           (if (= count 103)
+               (builder-xy 25 468 (add1 count) (append lst (list (make-posn 25 468))))   
                (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
           ;;((and (> count 16) (<= count 24))
           ;; (if (= count 17)
@@ -97,14 +117,14 @@
 
 (define (build-pel-img img)
   (define (builder-img count img lst)
-    (if (> count 51)
+    (if (> count 129)
         lst
         (builder-img (add1 count) img (append lst (list img)))))
   (builder-img 0 img '()))
 
 (define PEL-IMG (build-pel-img PELLET))
 
-(define PEL-POS (build-pel-xy 25 30)) 
+(define PEL-POS (build-pel-xy 25 35)) 
 
 
 ; DRAW THE WORLD
