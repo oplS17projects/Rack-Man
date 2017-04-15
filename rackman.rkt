@@ -6,6 +6,7 @@
 ; Libraries
 (require 2htdp/universe
          2htdp/image
+         lang/posn
          RSound)
 
 ; GLOBAL VARIABLES
@@ -25,6 +26,8 @@
 (define MAZE (bitmap/file "./maze_v2.png"))
 (define RACKMAN (bitmap/file "./rackman_right_c.png"))
 (define INKY (bitmap/file "./inky.png"))
+(define PELLET (circle 5 "solid" "white"))
+(define SCENE (rectangle 500 500 "solid" "black"))
 
 ;;; MAZE WALL COORDINATES ;;;
 (define R-DIR-WALLS
@@ -69,28 +72,54 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; PELLET COORIDATE LIST ;;
+
+(define (build-pel-xy x y)
+  (define (builder-xy x y count lst)
+    (cond ((and (>= count 0) (<= count 7))
+           (builder-xy (+ x 25) y (add1 count) (append lst (list (make-posn x y))))) ;
+          (else lst)))
+  (builder-xy x y 0 '()))
+
+(define (build-pel-img img)
+  (define (builder-img count img lst)
+    (if (> count 7)
+        lst
+        (builder-img (add1 count) img (append lst (list img)))))
+  (builder-img 0 img '()))
+
+(define PEL-IMG (build-pel-img PELLET))
+
+(define PEL-POS (build-pel-xy 25 30)) 
+
 
 ; DRAW THE WORLD
 ; take in the world state 't' and render the appropriate scene
 (define (myWorld t) ;<-- the t-parameter is our WorldState
   (if (list? t)
-      ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw 
-      (place-image (scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
-                   (car t)  ; x
-                   (cadr t) ; y
-                   (place-image (scale/xy .2 .2 INKY) ; place the ghost in the world at the given coordinates
-                                (third t)  ; x
-                                (fourth t) ; y
-                                (place-image MAZE
-                                             250 250
-                                             (rectangle 500 500 "solid" "black"))))
+      ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw
+      (begin
+        (place-image (scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
+                     (car t)  ; x
+                     (cadr t) ; y
+                     (place-image (scale/xy .2 .2 INKY) ; place the ghost in the world at the given coordinates
+                                  (third t)  ; x
+                                  (fourth t) ; y
+                                  (place-image MAZE
+                                               250 250
+                                               ;SCENE)))
+                                               (place-images PEL-IMG PEL-POS SCENE))));(rectangle 500 500 "solid" "black")))))
+        )
+                                               ;(rectangle 500 500 "solid" "black"))))
       ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen
       (place-image (text "Press Shift to Start!" 24 "white")
                    250 400 ; x y
                    (place-image SPLASH
                                 250 250
-                                (rectangle 500 500 "outline" "black")))))
-                 
+                                SCENE))))
+                                ;(rectangle 500 500 "outline" "black")))))
+
+
 ; KEY PRESS HANDLER
 ; if the user presses any arrow key, update the state variable for those keys, and reset the state for each other key
 (define (react w x)
@@ -102,6 +131,8 @@
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
+                                (display PEL-POS)
+                                (display PEL-IMG)
                             ;;    (play THEME)
                                 (set! START #t)
                                 (list 250 374 250 250))  ;; starting position of RackMan and Ghost
