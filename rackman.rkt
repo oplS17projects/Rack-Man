@@ -6,6 +6,7 @@
 ; Libraries
 (require 2htdp/universe
          2htdp/image
+         lang/posn
          RSound)
 
 ; GLOBAL VARIABLES
@@ -25,6 +26,8 @@
 (define MAZE (bitmap/file "./maze_v2.png"))
 (define RACKMAN (bitmap/file "./rackman_right_c.png"))
 (define INKY (bitmap/file "./inky.png"))
+(define PELLET (circle 3 "solid" "white"))
+(define SCENE (rectangle 500 500 "solid" "black"))
 
 ;;; MAZE WALL COORDINATES ;;;
 (define R-DIR-WALLS
@@ -69,28 +72,225 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; PELLET COORIDATE LIST ;;
+
+(define (build-pel-xy x y)
+  (define (builder-xy x y count lst)
+          ;;;;;;;;;;;; ROW 1 ;;;;;;;;;;;;
+    (cond ((and (>= count 0) (< count 12)) ;; 12 Pellets
+           (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y)))))
+          ((and (>= count 12) (<= count 24))
+           (if (= count 12)
+               (builder-xy (+ x 37) y (add1 count) (append lst (list (make-posn (+ x 37) y))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; ROW 2 ;;;;;;;;;;;;
+          ((and (> count 24) (<= count 51)) ;; 27 pellets
+           (if (= count 25)
+               (builder-xy  43 (+ y 55) (add1 count) (append lst (list (make-posn 43 (+ y 55)))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; COLLUM 1 ;;;;;;;;;;;;
+          ((and (> count 51) (<= count 58)) ;; 7 pellets
+           (if (= count 52)
+               (builder-xy 25 53 (add1 count) (append lst (list (make-posn 25 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; COLLUM 2 ;;;;;;;;;;;;
+          ((and (> count 58) (<= count 80)) ;; 22 pellets
+           (if (= count 59)
+               (builder-xy 115 53 (add1 count) (append lst (list (make-posn 115 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; COLLUM 3 ;;;;;;;;;;;;
+          ((and (> count 80) (<= count 102)) ;; 22 pellets
+           (if (= count 81)
+               (builder-xy 386 53 (add1 count) (append lst (list (make-posn 386 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;;;;;;;;;; ROW 3 ;;;;;;;;;;;;
+          ((and (> count 102) (<= count 129)) ;; 27 pellets
+           (if (= count 103)
+               (builder-xy 25 468 (add1 count) (append lst (list (make-posn 25 468))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 129) (<= count 135)) ;; 6 pellets
+           (if (= count 130)
+               (builder-xy 25 414 (add1 count) (append lst (list (make-posn 25 414))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 135) (<= count 138)) ;; 3 pellets
+           (if (= count 136)
+               (builder-xy 25 432 (add1 count) (append lst (list (make-posn 25 432))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 138) (<= count 144)) ;; 5 pellets
+           (if (= count 139)
+               (builder-xy 25 323 (add1 count) (append lst (list (make-posn 25 323))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 144) (<= count 149)) ;; 5 pellets
+           (if (= count 145)
+               (builder-xy 25 341 (add1 count) (append lst (list (make-posn 25 341))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 149) (<= count 164)) ;; 5 pellets
+           (if (= count 150)
+               (builder-xy 133 377 (add1 count) (append lst (list (make-posn 133 377))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 164) (<= count 167)) ;; 5 pellets
+           (if (= count 165)
+               (builder-xy 169 395 (add1 count) (append lst (list (make-posn 25 395))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 167) (<= count 171)) ;; 5 pellets
+           (if (= count 168)
+               (builder-xy 187 413 (add1 count) (append lst (list (make-posn 187 413))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 171) (<= count 174)) ;; 5 pellets
+           (if (= count 172)
+               (builder-xy 223 431 (add1 count) (append lst (list (make-posn 223 431))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 174) (<= count 177)) ;; 3 pellets
+           (if (= count 175)
+               (builder-xy 43 377 (add1 count) (append lst (list (make-posn 43 377))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 177) (<= count 184)) ;; 7 pellets
+           (if (= count 178)
+               (builder-xy 133 323 (add1 count) (append lst (list (make-posn 133 323))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 184) (<= count 187)) ;; 3 pellets
+           (if (= count 185)
+               (builder-xy 223 341 (add1 count) (append lst (list (make-posn 223 341))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 187) (<= count 193)) ;; 6 pellets
+           (if (= count 188)
+               (builder-xy 404 413 (add1 count) (append lst (list (make-posn 404 413))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 193) (<= count 199)) ;; 6 pellets
+           (if (= count 194)
+               (builder-xy 404 323 (add1 count) (append lst (list (make-posn 404 323))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 199) (<= count 206)) ;; 7 pellets
+           (if (= count 200)
+               (builder-xy 368 323 (add1 count) (append lst (list (make-posn 368 323))))   
+               (builder-xy (- x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 206) (<= count 209)) ;; 3 pellets
+           (if (= count 207)
+               (builder-xy 278 341 (add1 count) (append lst (list (make-posn 278 341))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;  ROW ;;;
+          ((and (> count 209) (<= count 214)) ;; 4 pellets
+           (if (= count 210)
+               (builder-xy 43 143 (add1 count) (append lst (list (make-posn 43 143))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 214) (<= count 220)) ;; 5 pellets
+           (if (= count 215)
+               (builder-xy 404 143 (add1 count) (append lst (list (make-posn 404 143))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ;;; COLLUM ;;
+          ((and (> count 220) (<= count 224)) ;; 3 pellets
+           (if (= count 221)
+               (builder-xy 169 108 (add1 count) (append lst (list (make-posn 169 108))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 224) (<= count 228)) ;; 3 pellets
+           (if (= count 225)
+               (builder-xy 331 108 (add1 count) (append lst (list (make-posn 331 108))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;;  ROW ;;;
+          ((and (> count 228) (<= count 232)) ;; 3 pellets
+           (if (= count 229)
+               (builder-xy 187 143 (add1 count) (append lst (list (make-posn 187 143))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 232) (<= count 236)) ;; 3 pellets
+           (if (= count 233)
+               (builder-xy 277 143 (add1 count) (append lst (list (make-posn 277 143))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ;;; COLLUM ;;
+          ((and (> count 236) (<= count 239)) ;; 2 pellets
+           (if (= count 237)
+               (builder-xy 223 53 (add1 count) (append lst (list (make-posn 223 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 239) (<= count 242)) ;; 2 pellets
+           (if (= count 240)
+               (builder-xy 278 53 (add1 count) (append lst (list (make-posn 278 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 242) (<= count 245)) ;; 2 pellets
+           (if (= count 243)
+               (builder-xy 476 53 (add1 count) (append lst (list (make-posn 476 53))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 245) (<= count 248)) ;; 2 pellets
+           (if (= count 246)
+               (builder-xy 476 107 (add1 count) (append lst (list (make-posn 476 107))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 248) (<= count 252)) ;; 3 pellets
+           (if (= count 249)
+               (builder-xy 476 341 (add1 count) (append lst (list (make-posn 476 341))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 252) (<= count 255)) ;; 2 pellets
+           (if (= count 253)
+               (builder-xy 476 431 (add1 count) (append lst (list (make-posn 476 431))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 255) (<= count 258)) ;; 2 pellets
+           (if (= count 256)
+               (builder-xy 331 395 (add1 count) (append lst (list (make-posn 331 395))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 258) (<= count 261)) ;; 2 pellets
+           (if (= count 259)
+               (builder-xy 440 377 (add1 count) (append lst (list (make-posn 440 377))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 261) (<= count 265)) ;; 2 pellets
+           (if (= count 262)
+               (builder-xy 277 431 (add1 count) (append lst (list (make-posn 277 431))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ;;; ROW ;;;
+          ((and (> count 265) (<= count 269)) ;; 3 pellets
+           (if (= count 266)
+               (builder-xy 277 413 (add1 count) (append lst (list (make-posn 277 413))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (= count 270)) (builder-xy 61 395 (add1 count) (append lst (list (make-posn 61 395)))))
+          
+          
+          
+        
+          ;;((and (> count 16) (<= count 24))
+          ;; (if (= count 17)
+          ;;     (builder-xy 25 (+ y 30) (add1 count) (append lst (list (make-posn x y))))   
+          ;;     (builder-xy (+ x 25) y (add1 count) (append lst (list (make-posn x y))))))
+          (else lst)))
+  (builder-xy x y 0 '()))
+
+(define PEL-POS (build-pel-xy 25 35)) ;; Makes the call to build the list of posn objects for the pellets
+
+(define (build-pel-img img)
+  (define (builder-img count img lst)
+    (if (= count (length PEL-POS))
+        lst
+        (builder-img (add1 count) img (append lst (list img)))))
+  (builder-img 0 img '()))
+
+(define PEL-IMG (build-pel-img PELLET)) ;; Makes the call to build the list of image objects for the pellets
+
+(define PELLETS (length PEL-POS)) ;; variable to hold the number of pellets
+ 
+
 
 ; DRAW THE WORLD
 ; take in the world state 't' and render the appropriate scene
 (define (myWorld t) ;<-- the t-parameter is our WorldState
   (if (list? t)
-      ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw 
-      (place-image (scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
-                   (car t)  ; x
-                   (cadr t) ; y
-                   (place-image (scale/xy .2 .2 INKY) ; place the ghost in the world at the given coordinates
-                                (third t)  ; x
-                                (fourth t) ; y
-                                (place-image MAZE
-                                             250 250
-                                             (rectangle 500 500 "solid" "black"))))
+      ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw
+      (begin
+        (place-image (scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
+                     (car t)  ; x
+                     (cadr t) ; y
+                     (place-image (scale/xy .2 .2 INKY) ; place the ghost in the world at the given coordinates
+                                  (third t)  ; x
+                                  (fourth t) ; y
+                                  (place-image MAZE
+                                               250 250
+                                               ;SCENE)))
+                                               (place-images PEL-IMG PEL-POS SCENE))));(rectangle 500 500 "solid" "black")))))
+        )
+                                               ;(rectangle 500 500 "solid" "black"))))
       ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen
       (place-image (text "Press Shift to Start!" 24 "white")
                    250 400 ; x y
                    (place-image SPLASH
                                 250 250
-                                (rectangle 500 500 "outline" "black")))))
-                 
+                                SCENE))))
+                                ;(rectangle 500 500 "outline" "black")))))
+
+
 ; KEY PRESS HANDLER
 ; if the user presses any arrow key, update the state variable for those keys, and reset the state for each other key
 (define (react w x)
@@ -102,6 +302,8 @@
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
+                                ;(display PEL-POS)
+                                ;(display PEL-IMG)
                             ;;    (play THEME)
                                 (set! START #t)
                                 (list 250 374 250 250))  ;; starting position of RackMan and Ghost
@@ -188,6 +390,7 @@
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               (else w)))))
+
 ;;;;;;;;;;;;;;;;;;;; 
 ;;;; CHECK MAZE ;;;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -199,114 +402,156 @@
 ;;; Returns #t if a collision is detected
 ;;; Returns #f if no collision is detected
 (define (maze-check x y lst)
+  (begin
+    (if (equal? (check-pel x y) #t)
+        0;(display "YES") ; increase score
+        0);(display "NO")); nothing
+    (cond ((equal? LEFT #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "LEFT: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? RIGHT #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "RIGHT: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? DOWN #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ;((>= y (- (second wall) OFFSET))
+                                           ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "DOWN: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? UP #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ;((<= y (+ (second wall) 12))
+                                           ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "UP: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          (else #f))))
+
+;;;;;;;;;;;;;;;;;;;;;;; 
+;;;; CHECK PELLETS ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+;;; x -> Rack-Mans x pos
+;;; y -> Rack-mans y pos
+;;; check if rackmans position matches the position of any pellets,
+;;; if it does, remove that pellet
+(define (check-pel x y)
   (cond ((equal? LEFT #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
-                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                         ((and (<= x (+ (posn-x pel) OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) OFFSET)) (<= y (+ (posn-y pel) OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
-                                               (when (equal? DEBUGGER 1) 
-						(begin(display "LEFT: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                         ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
-                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
-                                         ;                           (else #f)))
-                                         ;        #f
-                                         ;        lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         ((equal? RIGHT #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
-                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                         ((and (>= x (- (posn-x pel) OFFSET)) (<= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) OFFSET)) (<= y (+ (posn-y pel) OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
-                                                (when (equal? DEBUGGER 1) 
-						(begin(display "RIGHT: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                         ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
-                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
-                                         ;                           (else #f)))
-                                         ;        #f
-                                         ;        lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         ((equal? DOWN #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((>= y (- (second wall) OFFSET))
-                                         ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
-                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                         ((and (>= y (- (posn-y pel) OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) OFFSET)) (<= x (+ (posn-x pel) OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
-                                                 (when (equal? DEBUGGER 1) 
-						(begin(display "DOWN: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                          ;                                ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
-                                          ;                                (else #f)))
-                                          ;       #f
-                                          ;       lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         ((equal? UP #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((<= y (+ (second wall) 12))
-                                         ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
-                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                         ((and (<= y (+ (posn-y pel) OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) OFFSET)) (<= x (+ (posn-x pel) OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
-                                                (when (equal? DEBUGGER 1) 
-						(begin(display "UP: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                          ;                          ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
-                                          ;                          (else #f)))
-                                          ;       #f
-                                          ;       lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         (else #f)))
 
 ; GHOST
@@ -352,7 +597,7 @@
           (on-tick tick-handler)
           (to-draw myWorld)
           (on-key react)
-          (name "Rack-Man v0.3")
+          (name "Rack-Man v3.0")
           (stop-when game-over high-score))
 
 
