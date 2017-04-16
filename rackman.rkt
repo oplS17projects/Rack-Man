@@ -108,6 +108,69 @@
            (if (= count 103)
                (builder-xy 25 468 (add1 count) (append lst (list (make-posn 25 468))))   
                (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 129) (<= count 135)) ;; 6 pellets
+           (if (= count 130)
+               (builder-xy 25 414 (add1 count) (append lst (list (make-posn 25 414))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 135) (<= count 138)) ;; 3 pellets
+           (if (= count 136)
+               (builder-xy 25 432 (add1 count) (append lst (list (make-posn 25 432))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 138) (<= count 144)) ;; 5 pellets
+           (if (= count 139)
+               (builder-xy 25 323 (add1 count) (append lst (list (make-posn 25 323))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 144) (<= count 149)) ;; 5 pellets
+           (if (= count 145)
+               (builder-xy 25 341 (add1 count) (append lst (list (make-posn 25 341))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 149) (<= count 164)) ;; 5 pellets
+           (if (= count 150)
+               (builder-xy 133 377 (add1 count) (append lst (list (make-posn 133 377))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 164) (<= count 167)) ;; 5 pellets
+           (if (= count 165)
+               (builder-xy 169 395 (add1 count) (append lst (list (make-posn 25 395))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 167) (<= count 171)) ;; 5 pellets
+           (if (= count 168)
+               (builder-xy 187 413 (add1 count) (append lst (list (make-posn 187 413))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 171) (<= count 174)) ;; 5 pellets
+           (if (= count 172)
+               (builder-xy 223 431 (add1 count) (append lst (list (make-posn 223 431))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 174) (<= count 177)) ;; 5 pellets
+           (if (= count 175)
+               (builder-xy 43 377 (add1 count) (append lst (list (make-posn 43 377))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 177) (<= count 184)) ;; 5 pellets
+           (if (= count 178)
+               (builder-xy 133 323 (add1 count) (append lst (list (make-posn 133 323))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 184) (<= count 187)) ;; 5 pellets
+           (if (= count 185)
+               (builder-xy 223 341 (add1 count) (append lst (list (make-posn 223 341))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 187) (<= count 193)) ;; 5 pellets
+           (if (= count 188)
+               (builder-xy 404 413 (add1 count) (append lst (list (make-posn 404 413))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 193) (<= count 199)) ;; 5 pellets
+           (if (= count 194)
+               (builder-xy 404 323 (add1 count) (append lst (list (make-posn 404 323))))   
+               (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 199) (<= count 206)) ;; 5 pellets
+           (if (= count 200)
+               (builder-xy 368 323 (add1 count) (append lst (list (make-posn 368 323))))   
+               (builder-xy (- x 18) y (add1 count) (append lst (list (make-posn x y))))))
+          ((and (> count 206) (<= count 209)) ;; 5 pellets
+           (if (= count 207)
+               (builder-xy 278 341 (add1 count) (append lst (list (make-posn 278 341))))   
+               (builder-xy x (+ y 18) (add1 count) (append lst (list (make-posn x y))))))
+          
+          
+        
           ;;((and (> count 16) (<= count 24))
           ;; (if (= count 17)
           ;;     (builder-xy 25 (+ y 30) (add1 count) (append lst (list (make-posn x y))))   
@@ -117,7 +180,7 @@
 
 (define (build-pel-img img)
   (define (builder-img count img lst)
-    (if (> count 129)
+    (if (> count 209)
         lst
         (builder-img (add1 count) img (append lst (list img)))))
   (builder-img 0 img '()))
@@ -417,7 +480,7 @@
           (on-tick tick-handler)
           (to-draw myWorld)
           (on-key react)
-          (name "Rack-Man v0.3")
+          (name "Rack-Man v3.0")
           (stop-when game-over high-score))
 
 
