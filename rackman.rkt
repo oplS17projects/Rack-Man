@@ -258,7 +258,9 @@
         (builder-img (add1 count) img (append lst (list img)))))
   (builder-img 0 img '()))
 
-(define PEL-IMG (build-pel-img PELLET))
+(define PEL-IMG (build-pel-img PELLET)) ;; Makes the call to build the list of image objects for the pellets
+
+(define PELLETS (length PEL-POS)) ;; variable to hold the number of pellets
  
 
 
@@ -388,6 +390,7 @@
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
               (else w)))))
+
 ;;;;;;;;;;;;;;;;;;;; 
 ;;;; CHECK MAZE ;;;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -399,114 +402,156 @@
 ;;; Returns #t if a collision is detected
 ;;; Returns #f if no collision is detected
 (define (maze-check x y lst)
+  (begin
+    (if (equal? (check-pel x y) #t)
+        0;(display "YES") ; increase score
+        0);(display "NO")); nothing
+    (cond ((equal? LEFT #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "LEFT: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? RIGHT #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "RIGHT: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? DOWN #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ;((>= y (- (second wall) OFFSET))
+                                           ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "DOWN: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? UP #t) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ;((<= y (+ (second wall) 12))
+                                           ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "UP: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          (else #f))))
+
+;;;;;;;;;;;;;;;;;;;;;;; 
+;;;; CHECK PELLETS ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+;;; x -> Rack-Mans x pos
+;;; y -> Rack-mans y pos
+;;; check if rackmans position matches the position of any pellets,
+;;; if it does, remove that pellet
+(define (check-pel x y)
   (cond ((equal? LEFT #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
-                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                         ((and (<= x (+ (posn-x pel) OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) OFFSET)) (<= y (+ (posn-y pel) OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
-                                               (when (equal? DEBUGGER 1) 
-						(begin(display "LEFT: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                         ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
-                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
-                                         ;                           (else #f)))
-                                         ;        #f
-                                         ;        lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         ((equal? RIGHT #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
-                                          (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                         ((and (>= x (- (posn-x pel) OFFSET)) (<= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) OFFSET)) (<= y (+ (posn-y pel) OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
-                                                (when (equal? DEBUGGER 1) 
-						(begin(display "RIGHT: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                         ;((and (<= x (- (car wall) OFFSET)) (>= x (+ (car wall) OFFSET)))
-                                         ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                         ;                           ((and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) #t)
-                                         ;                           (else #f)))
-                                         ;        #f
-                                         ;        lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         ((equal? DOWN #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((>= y (- (second wall) OFFSET))
-                                         ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
-                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                         ((and (>= y (- (posn-y pel) OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) OFFSET)) (<= x (+ (posn-x pel) OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
-                                                 (when (equal? DEBUGGER 1) 
-						(begin(display "DOWN: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                          ;                                ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
-                                          ;                                (else #f)))
-                                          ;       #f
-                                          ;       lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         ((equal? UP #t) ;#f)
-         (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+         (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((<= y (+ (second wall) 12))
-                                         ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
-                                          (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                         ((and (<= y (+ (posn-y pel) OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) OFFSET)) (<= x (+ (posn-x pel) OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
-                                                (when (equal? DEBUGGER 1) 
-						(begin(display "UP: (")
-                                                (display (first wall))
-                                                (display " ")
-                                                (display (second wall))
-                                                (display " ")
-                                                (display (third wall))
-                                                (display " ")
-                                                (display (fourth wall))
-                                                (display ")")
-                                                 (display " \n")))
+                                                (set! PEL-POS (remove pel PEL-POS))
+                                                (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 #t)
                                               #f))
-                                          ;(foldl (lambda (wall res) (cond ((equal? res #t) #t)
-                                          ;                          ((and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) #t)
-                                          ;                          (else #f)))
-                                          ;       #f
-                                          ;       lst))
                                          (else #f)))
-         #f
-         lst))
+                #f
+                PEL-POS))
         (else #f)))
 
 ; GHOST
