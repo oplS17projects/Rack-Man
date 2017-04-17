@@ -23,8 +23,9 @@
 (define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
 (define END-SCREEN (bitmap/file "./end.png"))
-(define MAZE (bitmap/file "./maze_v2.png"))
-(define RACKMAN (bitmap/file "./rackman_right_c.png"))
+(define MAZE (bitmap/file "./maze_v3.png"))
+;(define RACKMAN (bitmap/file "./rackman_right_c.png"))
+(define RACKMAN (bitmap/file "./rackman_right.png"))
 (define INKY (bitmap/file "./inky.png"))
 (define PELLET (circle 3 "solid" "white"))
 (define SCENE (rectangle 500 500 "solid" "black"))
@@ -238,19 +239,12 @@
                (builder-xy 277 413 (add1 count) (append lst (list (make-posn 277 413))))   
                (builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y))))))
           ((and (= count 270)) (builder-xy 61 395 (add1 count) (append lst (list (make-posn 61 395)))))
-          
-          
-          
-        
-          ;;((and (> count 16) (<= count 24))
-          ;; (if (= count 17)
-          ;;     (builder-xy 25 (+ y 30) (add1 count) (append lst (list (make-posn x y))))   
-          ;;     (builder-xy (+ x 25) y (add1 count) (append lst (list (make-posn x y))))))
           (else lst)))
   (builder-xy x y 0 '()))
 
 (define PEL-POS (build-pel-xy 25 35)) ;; Makes the call to build the list of posn objects for the pellets
 
+;returns a list of image objects equal to the number of positions created above
 (define (build-pel-img img)
   (define (builder-img count img lst)
     (if (= count (length PEL-POS))
@@ -270,7 +264,7 @@
   (if (list? t)
       ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw
       (begin
-        (place-image (scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
+        (place-image RACKMAN;(scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
                      (car t)  ; x
                      (cadr t) ; y
                      (place-image (scale/xy .2 .2 INKY) ; place the ghost in the world at the given coordinates
@@ -309,7 +303,8 @@
                                 (list 250 374 250 250))  ;; starting position of RackMan and Ghost
                               w))
         ((key=? x "left") (begin
-                            (set! RACKMAN (bitmap/file "./rackman_left_c.png"))
+                            ;(set! RACKMAN (bitmap/file "./rackman_left_c.png"))
+                            (set! RACKMAN (bitmap/file "./rackman_left.png"))
                             (set! LEFT #t)
                             (set! RIGHT #f)
                             (set! DOWN #f)
@@ -320,7 +315,8 @@
                             ;(play ding)
                             ;(list (- (car w) 3) (cadr w) (third w) (fourth w))))
         ((key=? x "right") (begin
-                             (set! RACKMAN (bitmap/file "./rackman_right_c.png"))
+                             ;(set! RACKMAN (bitmap/file "./rackman_right_c.png"))
+                             (set! RACKMAN (bitmap/file "./rackman_right.png"))
                              (set! LEFT #f)
                              (set! RIGHT #t)
                              (set! DOWN #f)
@@ -331,7 +327,8 @@
                             ;(play ding)
                             ;(list (+ (car w) 3) (cadr w) (third w) (fourth w))))
         ((key=? x "up") (begin
-                          (set! RACKMAN (bitmap/file "./rackman_up_c.png"))
+                          ;(set! RACKMAN (bitmap/file "./rackman_up_c.png"))
+                          (set! RACKMAN (bitmap/file "./rackman_up.png"))
                           (set! LEFT #f)
                           (set! RIGHT #f)
                           (set! DOWN #f)
@@ -342,7 +339,8 @@
                             ;(play ding)
                             ;(list (car w) (- (cadr w) 3) (third w) (fourth w))))
         ((key=? x "down") (begin
-                            (set! RACKMAN (bitmap/file "./rackman_down_c.png"))
+                            ;(set! RACKMAN (bitmap/file "./rackman_down_c.png"))
+                            (set! RACKMAN (bitmap/file "./rackman_down.png"))
                             (set! LEFT #f)
                             (set! RIGHT #f)
                             (set! DOWN #t)
