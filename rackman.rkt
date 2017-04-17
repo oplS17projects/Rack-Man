@@ -19,6 +19,8 @@
 (define GHOST-SPEED 0)
 (define DEBUGGER 0)
 (define OFFSET 12)
+(define X-OFFSET 12)
+(define Y-OFFSET 12)
 (define OPEN 0)
 (define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
@@ -406,8 +408,8 @@
         0);(display "NO")); nothing
     (cond ((equal? LEFT #t) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
-                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+                                           ((and (<= x (+ (first wall) X-OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) Y-OFFSET)) (<= y (+ (fourth wall) Y-OFFSET))) ;; check if rackman is is lined up along Y with any walls
                                                 (begin
                                                   (when (equal? DEBUGGER 1) 
                                                     (begin(display "LEFT: (")
@@ -427,8 +429,8 @@
                   lst))
           ((equal? RIGHT #t) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
-                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if rackman is is lined up along Y with any walls
+                                           ((and (>= x (- (first wall) X-OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) Y-OFFSET)) (<= y (+ (fourth wall) Y-OFFSET))) ;; check if rackman is is lined up along Y with any walls
                                                 (begin
                                                   (when (equal? DEBUGGER 1) 
                                                     (begin(display "RIGHT: (")
@@ -449,8 +451,8 @@
           ((equal? DOWN #t) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((>= y (- (second wall) OFFSET))
-                                           ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
-                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                           ((and (>= y (- (second wall) Y-OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) X-OFFSET)) (<= x (+ (third wall) X-OFFSET))) ;; check if rackman is lined up along X with any walls
                                                 (begin
                                                   (when (equal? DEBUGGER 1) 
                                                     (begin(display "DOWN: (")
@@ -471,8 +473,8 @@
           ((equal? UP #t) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((<= y (+ (second wall) 12))
-                                           ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
-                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if rackman is lined up along X with any walls
+                                           ((and (<= y (+ (second wall) Y-OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) X-OFFSET)) (<= x (+ (third wall) X-OFFSET))) ;; check if rackman is lined up along X with any walls
                                                 (begin
                                                   (when (equal? DEBUGGER 1) 
                                                     (begin(display "UP: (")
