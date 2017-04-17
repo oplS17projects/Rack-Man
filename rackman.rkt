@@ -14,13 +14,14 @@
 (define RIGHT #f)
 (define DOWN #f)
 (define UP #f)
+(define NEXT-DIR 0)
 (define START #f)
 (define SPEED 2)
 (define GHOST-SPEED 0)
 (define DEBUGGER 0)
 (define OFFSET 12)
-(define X-OFFSET 12)
-(define Y-OFFSET 12)
+(define X-OFFSET 11)
+(define Y-OFFSET 11)
 (define OPEN 0)
 (define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
@@ -304,54 +305,86 @@
                                 (set! START #t)
                                 (list 250 374 250 250))  ;; starting position of RackMan and Ghost
                               w))
-        ((key=? x "left") (begin
+        ((key=? x "left") #|(begin
                             ;(set! RACKMAN (bitmap/file "./rackman_left_c.png"))
                             (set! RACKMAN (bitmap/file "./rackman_left.png"))
                             (set! LEFT #t)
                             (set! RIGHT #f)
                             (set! DOWN #f)
                             (set! UP #f)
-                            w))
-                          ; old method, manually updating movement on key press
-                          ;(begin
-                            ;(play ding)
-                            ;(list (- (car w) 3) (cadr w) (third w) (fourth w))))
-        ((key=? x "right") (begin
+                            w))|#
+         (if (equal? (maze-check (- (first w) 7) (second w) L-DIR-WALLS) #t)
+             (begin
+               (set! NEXT-DIR 1)
+               w)
+             (begin
+               ;(set! RACKMAN (bitmap/file "./rackman_left_c.png"))
+               (set! RACKMAN (bitmap/file "./rackman_left.png"))
+               (set! LEFT #t)
+               (set! RIGHT #f)
+               (set! DOWN #f)
+               (set! UP #f)
+               w)))
+        ((key=? x "right") #|(begin
                              ;(set! RACKMAN (bitmap/file "./rackman_right_c.png"))
                              (set! RACKMAN (bitmap/file "./rackman_right.png"))
                              (set! LEFT #f)
                              (set! RIGHT #t)
                              (set! DOWN #f)
                              (set! UP #f)
-                             w));
-                           ; old method, manually updating movement on key press
-                           ;(begin
-                            ;(play ding)
-                            ;(list (+ (car w) 3) (cadr w) (third w) (fourth w))))
-        ((key=? x "up") (begin
+                             w));|#
+         (if (equal? (maze-check (+ (first w) 7) (second w) R-DIR-WALLS) #t)
+             (begin
+               (set! NEXT-DIR 2)
+               w)
+             (begin
+               ;(set! RACKMAN (bitmap/file "./rackman_right_c.png"))
+               (set! RACKMAN (bitmap/file "./rackman_right.png"))
+               (set! LEFT #f)
+               (set! RIGHT #t)
+               (set! DOWN #f)
+               (set! UP #f)
+               w)))
+        ((key=? x "up") #|(begin
                           ;(set! RACKMAN (bitmap/file "./rackman_up_c.png"))
                           (set! RACKMAN (bitmap/file "./rackman_up.png"))
                           (set! LEFT #f)
                           (set! RIGHT #f)
                           (set! DOWN #f)
                           (set! UP #t)
-                          w))
-                         ; old method, manually updating movement on key press
-                         ;(begin
-                            ;(play ding)
-                            ;(list (car w) (- (cadr w) 3) (third w) (fourth w))))
-        ((key=? x "down") (begin
+                          w))|#
+         (if (equal? (maze-check (first w) (- (second w) 7) U-DIR-WALLS) #t)
+             (begin
+               (set! NEXT-DIR 3)
+               w)
+             (begin
+               ;(set! RACKMAN (bitmap/file "./rackman_up_c.png"))
+               (set! RACKMAN (bitmap/file "./rackman_up.png"))
+               (set! LEFT #f)
+               (set! RIGHT #f)
+               (set! DOWN #f)
+               (set! UP #t)
+               w)))
+        ((key=? x "down") #|(begin
                             ;(set! RACKMAN (bitmap/file "./rackman_down_c.png"))
                             (set! RACKMAN (bitmap/file "./rackman_down.png"))
                             (set! LEFT #f)
                             (set! RIGHT #f)
                             (set! DOWN #t)
                             (set! UP #f)
-                            w))
-                           ; old method, manually updating movement on key press
-                           ;(begin
-                            ;(play ding)
-                            ;(list (car w) (+ (cadr w) 3) (third w) (fourth w))))
+                            w))|#
+         (if (equal? (maze-check (first w) (+ (second w) 7) D-DIR-WALLS) #t)
+             (begin
+               (set! NEXT-DIR 4)
+               w)
+             (begin
+               ;(set! RACKMAN (bitmap/file "./rackman_down_c.png"))
+               (set! RACKMAN (bitmap/file "./rackman_down.png"))
+               (set! LEFT #f)
+               (set! RIGHT #f)
+               (set! DOWN #t)
+               (set! UP #f)
+               w)))
         (else w))) ; any other key press, just return an unaltered world state
 
 ; ON TICK HANDLER
@@ -360,9 +393,37 @@
 ;  if the state is true, move rackman in that direction by updating his X,Y cooridantes
 (define (tick-handler w)
   (begin
-    ;(if(equal? (remainder OPEN 28) 0) ;
-    ;   (begin (set! OPEN 0) (set! RACKMAN (bitmap/file "./rackman_right_o.png")))
-    ;   (begin (set! OPEN (add1 OPEN)) (set! RACKMAN (bitmap/file "./rackman_right_c.png"))))
+    #|
+    (cond ((= NEXT-DIR 1)
+           (begin
+             (set! NEXT-DIR 0)
+             (set! LEFT #t)
+             (set! RIGHT #f)
+             (set! DOWN #f)
+             (set! UP #f)))
+          ((= NEXT-DIR 2)
+           (begin
+             (set! NEXT-DIR 0)
+             (set! LEFT #f)
+             (set! RIGHT #t)
+             (set! DOWN #f)
+             (set! UP #f)))
+          ((= NEXT-DIR 3)
+           (begin
+             (set! NEXT-DIR 0)
+             (set! LEFT #f)
+             (set! RIGHT #f)
+             (set! DOWN #f)
+             (set! UP #t)))
+          ((= NEXT-DIR 4)
+           (begin
+             (set! NEXT-DIR 0)
+             (set! LEFT #f)
+             (set! RIGHT #f)
+             (set! DOWN #t)
+             (set! UP #f)))
+          (else 0))
+    |#
     (if (equal? w 0)
         w
         (cond ((not (list? w)) w)
@@ -406,7 +467,7 @@
     (if (equal? (check-pel x y) #t)
         0;(display "YES") ; increase score
         0);(display "NO")); nothing
-    (cond ((equal? LEFT #t) ;#f)
+    (cond ((equal? lst L-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ((and (<= x (+ (first wall) X-OFFSET)) (>= x (first wall))) ;; check if rackman is lined up along X with any walls
                                             (if (and (>= y (- (second wall) Y-OFFSET)) (<= y (+ (fourth wall) Y-OFFSET))) ;; check if rackman is is lined up along Y with any walls
@@ -427,7 +488,7 @@
                                            (else #f)))
                   #f
                   lst))
-          ((equal? RIGHT #t) ;#f)
+          ((equal? lst R-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ((and (>= x (- (first wall) X-OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
                                             (if (and (>= y (- (second wall) Y-OFFSET)) (<= y (+ (fourth wall) Y-OFFSET))) ;; check if rackman is is lined up along Y with any walls
@@ -448,7 +509,7 @@
                                            (else #f)))
                   #f
                   lst))
-          ((equal? DOWN #t) ;#f)
+          ((equal? lst D-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((>= y (- (second wall) OFFSET))
                                            ((and (>= y (- (second wall) Y-OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
@@ -470,7 +531,7 @@
                                            (else #f)))
                   #f
                   lst))
-          ((equal? UP #t) ;#f)
+          ((equal? lst U-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((<= y (+ (second wall) 12))
                                            ((and (<= y (+ (second wall) Y-OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
