@@ -7,7 +7,8 @@
 (require 2htdp/universe
          2htdp/image
          lang/posn
-         RSound)
+         RSound
+         net/url)
 (require "coords.rkt")
 
 ; GLOBAL VARIABLES
@@ -98,6 +99,8 @@
                                 ;(display PEL-POS)
                                 ;(display PEL-IMG)
                                 ;(play THEME)
+                                ;(set! NAME (read))
+                                
                                 (set! START #t)
                                 (list 250 374 250 186))  ;; starting position of RackMan and Ghost
                               w))
@@ -539,6 +542,9 @@
 ; NOT COMPLETE YET 
 ; Dipsplay Local high-score
 (define (high-score w)
+  ;;TEMPORARY SOLUTION FOR NAME
+  (begin
+    (set! NAME (read)))
   (place-image (text "GAME OVER MAN! GAME OVER!" 24 "white")
                    250 400 ; x y
                    (place-image END-SCREEN
