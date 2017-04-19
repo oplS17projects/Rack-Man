@@ -24,9 +24,9 @@
 (define GHOST-SPEED 1)
 (define GHOST-DIR 1)
 (define DEBUGGER 0)
-(define GHOST-OFFSET 8)
-(define X-OFFSET 11)
-(define Y-OFFSET 11)
+(define GHOST-OFFSET 11)
+(define X-OFFSET 13)
+(define Y-OFFSET 13)
 (define OPEN 0)
 (define hsURL "")
 (define ip "http://138.197.13.254/addscore.php?name=")
@@ -494,6 +494,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) L-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (random 2 5 (current-pseudo-random-generator)))
+                     ;(set! GHOST-DIR 3)
                      (third w))
                    (- (third w) GHOST-SPEED))
                (fourth w)))
@@ -502,6 +503,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) R-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (random 1 5 (current-pseudo-random-generator)))
+                     ;(set! GHOST-DIR 4)
                      (third w))
                    (+ (third w) GHOST-SPEED))
                (fourth w)))
@@ -511,6 +513,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) D-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (random 1 5 (current-pseudo-random-generator)))
+                     ;(set! GHOST-DIR 1)
                      (fourth w))
                    (+ (fourth w) GHOST-SPEED))))
           ((= GHOST-DIR 4);UP
@@ -519,6 +522,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) U-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (random 1 5 (current-pseudo-random-generator)))
+                     ;(set! GHOST-DIR 2)
                      (fourth w))
                    (- (fourth w) GHOST-SPEED)))))))
           ;(else 0))))
@@ -526,7 +530,11 @@
 ; GAME OVER MAN! GAME OVER!
 (define (game-over w)
   (cond ((equal? w 0) #f)
-        ((equal? (check-ghost (list (first w) (second w)) (list (third w) (fourth w))) #t) #t)
+        ((equal? (check-ghost (list (first w) (second w)) (list (third w) (fourth w))) #t)
+         (begin
+           ;(set! MAZE (bitmap/file "./maze_game_over.png"))
+           ;(myWorld w)
+           #t))
         (else #f)))
 
 ; check the position of the ghost relative to rack-man
@@ -540,7 +548,7 @@
             #t
             (check-iter r_pos (add1 g_pos) (sub1 count)))
         #f))
-  (cond ((and (equal? (check-iter (first r) (first g) 15) #t) (equal? (check-iter (second r) (second g) 15) #t))  #t)
+  (cond ((and (equal? (check-iter (first r) (first g) 15) #t) (equal? (check-iter (second r) (second g) 15) #t)) #t)
         (else #f)))
 
 ; NOT COMPLETE YET 
@@ -548,6 +556,8 @@
 (define (high-score w)
   ;;TEMPORARY SOLUTION FOR NAME
   (begin
+    ;(set! MAZE (bitmap/file "./maze_game_over.png"))
+    ;(myWorld w)
     (set! NAME (read))
     (set! hsURL (string-append ip (~a NAME)))
     (set! hsURL (string-append hsURL addAnd))
