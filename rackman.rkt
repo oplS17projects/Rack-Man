@@ -24,7 +24,7 @@
 (define GHOST-SPEED 1)
 (define GHOST-DIR 1)
 (define DEBUGGER 0)
-(define OFFSET 8)
+(define GHOST-OFFSET 8)
 (define X-OFFSET 11)
 (define Y-OFFSET 11)
 (define OPEN 0)
@@ -104,15 +104,15 @@
                                 (set! START #t)
                                 (list 250 374 250 186))  ;; starting position of RackMan and Ghost
                               w))
-        ((key=? x "left") #|(begin
+        ((key=? x "left") (begin
                             ;(set! RACKMAN (bitmap/file "./rackman_left_c.png"))
                             (set! RACKMAN (bitmap/file "./rackman_left.png"))
                             (set! LEFT #t)
                             (set! RIGHT #f)
                             (set! DOWN #f)
                             (set! UP #f)
-                            w))|#
-         (if (equal? (maze-check (- (first w) 7) (second w) L-DIR-WALLS) #t)
+                            w))
+         #|(if (equal? (maze-check (- (first w) 7) (second w) L-DIR-WALLS) #t)
              (begin
                (set! NEXT-DIR 1)
                w)
@@ -123,16 +123,16 @@
                (set! RIGHT #f)
                (set! DOWN #f)
                (set! UP #f)
-               w)))
-        ((key=? x "right") #|(begin
+               w)))|#
+        ((key=? x "right") (begin
                              ;(set! RACKMAN (bitmap/file "./rackman_right_c.png"))
                              (set! RACKMAN (bitmap/file "./rackman_right.png"))
                              (set! LEFT #f)
                              (set! RIGHT #t)
                              (set! DOWN #f)
                              (set! UP #f)
-                             w));|#
-         (if (equal? (maze-check (+ (first w) 7) (second w) R-DIR-WALLS) #t)
+                             w))
+         #|(if (equal? (maze-check (+ (first w) 7) (second w) R-DIR-WALLS) #t)
              (begin
                (set! NEXT-DIR 2)
                w)
@@ -143,16 +143,16 @@
                (set! RIGHT #t)
                (set! DOWN #f)
                (set! UP #f)
-               w)))
-        ((key=? x "up") #|(begin
+               w))|#
+        ((key=? x "up") (begin
                           ;(set! RACKMAN (bitmap/file "./rackman_up_c.png"))
                           (set! RACKMAN (bitmap/file "./rackman_up.png"))
                           (set! LEFT #f)
                           (set! RIGHT #f)
                           (set! DOWN #f)
                           (set! UP #t)
-                          w))|#
-         (if (equal? (maze-check (first w) (- (second w) 7) U-DIR-WALLS) #t)
+                          w))
+         #|(if (equal? (maze-check (first w) (- (second w) 7) U-DIR-WALLS) #t)
              (begin
                (set! NEXT-DIR 3)
                w)
@@ -163,16 +163,16 @@
                (set! RIGHT #f)
                (set! DOWN #f)
                (set! UP #t)
-               w)))
-        ((key=? x "down") #|(begin
+               w)))|#
+        ((key=? x "down") (begin
                             ;(set! RACKMAN (bitmap/file "./rackman_down_c.png"))
                             (set! RACKMAN (bitmap/file "./rackman_down.png"))
                             (set! LEFT #f)
                             (set! RIGHT #f)
                             (set! DOWN #t)
                             (set! UP #f)
-                            w))|#
-         (if (equal? (maze-check (first w) (+ (second w) 7) D-DIR-WALLS) #t)
+                            w))
+         #|(if (equal? (maze-check (first w) (+ (second w) 7) D-DIR-WALLS) #t)
              (begin
                (set! NEXT-DIR 4)
                w)
@@ -183,7 +183,7 @@
                (set! RIGHT #f)
                (set! DOWN #t)
                (set! UP #f)
-               w)))
+               w)))|#
         (else w))) ; any other key press, just return an unaltered world state
 
 ; ON TICK HANDLER
@@ -358,8 +358,8 @@
   (begin
     (cond ((equal? lst L-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if ghost is lined up along X with any walls
-                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if ghost is is lined up along Y with any walls
+                                           ((and (<= x (+ (first wall) GHOST-OFFSET)) (>= x (first wall))) ;; check if ghost is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) GHOST-OFFSET)) (<= y (+ (fourth wall) GHOST-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -367,8 +367,8 @@
                   lst))
           ((equal? lst R-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if ghost is lined up along X with any walls
-                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if ghost is is lined up along Y with any walls
+                                           ((and (>= x (- (first wall) GHOST-OFFSET)) (<= x (first wall))) ;; check if ghost is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) GHOST-OFFSET)) (<= y (+ (fourth wall) GHOST-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -377,8 +377,8 @@
           ((equal? lst D-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((>= y (- (second wall) OFFSET))
-                                           ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if ghost is is lined up along Y with any walls
-                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if ghost is lined up along X with any walls
+                                           ((and (>= y (- (second wall) GHOST-OFFSET)) (<= y (second wall))) ;; check if ghost is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) GHOST-OFFSET)) (<= x (+ (third wall) GHOST-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -387,8 +387,8 @@
           ((equal? lst U-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((<= y (+ (second wall) 12))
-                                           ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if ghost is is lined up along Y with any walls
-                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if ghost is lined up along X with any walls
+                                           ((and (<= y (+ (second wall) GHOST-OFFSET)) (>= y (second wall))) ;; check if ghost is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) GHOST-OFFSET)) (<= x (+ (third wall) GHOST-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -406,8 +406,8 @@
 (define (check-pel x y)
   (cond ((equal? LEFT #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (<= x (+ (posn-x pel) OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
-                                          (if (and (>= y (- (posn-y pel) OFFSET)) (<= y (+ (posn-y pel) OFFSET))) ;; check if rackman is is lined up along Y with any pellets
+                                         ((and (<= x (+ (posn-x pel) GHOST-OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) GHOST-OFFSET)) (<= y (+ (posn-y pel) GHOST-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -422,8 +422,8 @@
                 PEL-POS))
         ((equal? RIGHT #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (>= x (- (posn-x pel) OFFSET)) (<= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
-                                          (if (and (>= y (- (posn-y pel) OFFSET)) (<= y (+ (posn-y pel) OFFSET))) ;; check if rackman is is lined up along Y with any pellets
+                                         ((and (>= x (- (posn-x pel) GHOST-OFFSET)) (<= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) GHOST-OFFSET)) (<= y (+ (posn-y pel) GHOST-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -439,8 +439,8 @@
         ((equal? DOWN #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((>= y (- (second wall) OFFSET))
-                                         ((and (>= y (- (posn-y pel) OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
-                                          (if (and (>= x (- (posn-x pel) OFFSET)) (<= x (+ (posn-x pel) OFFSET))) ;; check if rackman is lined up along X with any pellets
+                                         ((and (>= y (- (posn-y pel) GHOST-OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) GHOST-OFFSET)) (<= x (+ (posn-x pel) GHOST-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -456,8 +456,8 @@
         ((equal? UP #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((<= y (+ (second wall) 12))
-                                         ((and (<= y (+ (posn-y pel) OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
-                                          (if (and (>= x (- (posn-x pel) OFFSET)) (<= x (+ (posn-x pel) OFFSET))) ;; check if rackman is lined up along X with any pellets
+                                         ((and (<= y (+ (posn-y pel) GHOST-OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) GHOST-OFFSET)) (<= x (+ (posn-x pel) GHOST-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -536,7 +536,7 @@
             #t
             (check-iter r_pos (add1 g_pos) (sub1 count)))
         #f))
-  (cond ((and (equal? (check-iter (first r) (first g) 10) #t) (equal? (check-iter (second r) (second g) 10) #t))  #t)
+  (cond ((and (equal? (check-iter (first r) (first g) 15) #t) (equal? (check-iter (second r) (second g) 15) #t))  #t)
         (else #f)))
 
 ; NOT COMPLETE YET 
