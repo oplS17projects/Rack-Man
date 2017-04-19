@@ -28,6 +28,10 @@
 (define X-OFFSET 11)
 (define Y-OFFSET 11)
 (define OPEN 0)
+(define hsURL "")
+(define ip "http://138.197.13.254/addscore.php?name=")
+(define addAnd "&")
+(define scoreParam "score=")
 ;(define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
 (define END-SCREEN (bitmap/file "./end.png"))
@@ -544,7 +548,17 @@
 (define (high-score w)
   ;;TEMPORARY SOLUTION FOR NAME
   (begin
-    (set! NAME (read)))
+    (set! NAME (read))
+    (set! hsURL (string-append ip (~a NAME)))
+    (set! hsURL (string-append hsURL addAnd))
+    (set! hsURL (string-append hsURL scoreParam))
+    (set! hsURL (string-append (~a hsURL SCORE)))
+    (call/input-url (string->url hsURL)
+                get-pure-port
+                port->string)
+  ;  (display hsURL)
+   ; (display "\n")
+    )
   (place-image (text "GAME OVER MAN! GAME OVER!" 24 "white")
                    250 400 ; x y
                    (place-image END-SCREEN
