@@ -17,9 +17,10 @@
 (define NEXT-DIR 0)
 (define START #f)
 (define SPEED 2)
-(define GHOST-SPEED 0)
+(define GHOST-SPEED 1)
+(define GHOST-DIR 1)
 (define DEBUGGER 0)
-(define OFFSET 12)
+(define OFFSET 8)
 (define X-OFFSET 11)
 (define Y-OFFSET 11)
 (define OPEN 0)
@@ -48,7 +49,7 @@
   (list (list 96 47 96 77) (list 203 47 203 77) (list 257 15 257 77) (list 364 47 364 77)
         (list 453 47 453 77) (list 96 156 96 218) (list 96 109 96 124) (list 150 109 150 218)
         (list 203 156 203 171) (list 257 125 257 171) (list 364 109 364 218) (list 453 109 453 124)
-        (list 310 203 310 264) (list 310 109 310 124) (list 7 15 7 155) (list 150 250 150 311)
+        (list 310 203 310 264) (list 310 109 310 124) (list 8 16 8 155) (list 150 250 150 311)
         (list 310 297 310 311) (list 257 311 257 358) (list 364 250 364 311) (list 488 250 488 311)
         (list 96 343 96 405) (list 203 343 203 358) (list 364 343 364 358) (list 418 358 418 405)
         (list 453 343 453 358) (list 42 390 42 405) (list 203 437 203 452) (list 150 390 150 437)
@@ -62,7 +63,7 @@
         (list 347 250 364 250) (list 401 250 488 250) (list 44 343 96 343) (list 133 343 203 343)
         (list 294 343 364 343) (list 401 343 453 343) (list 8 390 42 390) (list 44 437 203 437)
         (list 133 390 150 390) (list 187 390 310 390) (list 294 437 453 437) (list 347 390 364 390)
-        (list 455 390 490 390)(list 6 250 96 250) (list 8 483 489 483)))
+        (list 455 390 490 390)(list 1 250 96 250) (list 8 483 489 483)))
 (define U-DIR-WALLS
   (list (list 44 77 96 77) (list 133 77 203 77) (list 294 77 364 77) (list 401 77 453 77)
         (list 44 124 96 124) (list 0 218 96 218) (list 133 218 150 218) (list 151 171 203 171)
@@ -295,15 +296,15 @@
                               (begin
                                 (play THEME)
                                 (set! START #t)
-                                (list 250 374 250 250)) ;; starting position of RackMan and Ghost
+                                (list 250 374 250 186)) ;; starting position of RackMan and Ghost
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
                                 ;(display PEL-POS)
                                 ;(display PEL-IMG)
-                            ;;    (play THEME)
+                                ;(play THEME)
                                 (set! START #t)
-                                (list 250 374 250 250))  ;; starting position of RackMan and Ghost
+                                (list 250 374 250 186))  ;; starting position of RackMan and Ghost
                               w))
         ((key=? x "left") #|(begin
                             ;(set! RACKMAN (bitmap/file "./rackman_left_c.png"))
@@ -555,6 +556,48 @@
                   lst))
           (else #f))))
 
+(define (ghost-maze-check x y lst)
+  (begin
+    (cond ((equal? lst L-DIR-WALLS) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ((and (<= x (+ (first wall) OFFSET)) (>= x (first wall))) ;; check if ghost is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if ghost is is lined up along Y with any walls
+                                                #t
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? lst R-DIR-WALLS) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ((and (>= x (- (first wall) OFFSET)) (<= x (first wall))) ;; check if ghost is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) OFFSET)) (<= y (+ (fourth wall) OFFSET))) ;; check if ghost is is lined up along Y with any walls
+                                                #t
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? lst D-DIR-WALLS) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ;((>= y (- (second wall) OFFSET))
+                                           ((and (>= y (- (second wall) OFFSET)) (<= y (second wall))) ;; check if ghost is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if ghost is lined up along X with any walls
+                                                #t
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          ((equal? lst U-DIR-WALLS) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ;((<= y (+ (second wall) 12))
+                                           ((and (<= y (+ (second wall) OFFSET)) (>= y (second wall))) ;; check if ghost is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) OFFSET)) (<= x (+ (third wall) OFFSET))) ;; check if ghost is lined up along X with any walls
+                                                #t
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+          (else #f))))
+
 ;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;; CHECK PELLETS ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -617,6 +660,7 @@
 
 ; GHOST
 (define (ghost d w)
+  #|
   (if (equal? d "x")
       (if (< (third w) (first w))
           (+ (third w) GHOST-SPEED)
@@ -624,6 +668,42 @@
       (if (< (fourth w) (second w))
           (+ (fourth w) GHOST-SPEED)
           (- (fourth w) GHOST-SPEED))))
+  |#
+  (begin
+    
+    (cond ((= GHOST-DIR 1);LEFT
+           (if (equal? d "x")
+               (if (equal? (ghost-maze-check (third w) (fourth w) L-DIR-WALLS) #t)
+                   (begin
+                     (set! GHOST-DIR (random 2 5 (current-pseudo-random-generator)))
+                     (third w))
+                   (- (third w) GHOST-SPEED))
+               (fourth w)))
+          ((= GHOST-DIR 2);RIGHT
+           (if (equal? d "x")
+               (if (equal? (ghost-maze-check (third w) (fourth w) R-DIR-WALLS) #t)
+                   (begin
+                     (set! GHOST-DIR (random 1 5 (current-pseudo-random-generator)))
+                     (third w))
+                   (+ (third w) GHOST-SPEED))
+               (fourth w)))
+          ((= GHOST-DIR 3);DOWN
+           (if (equal? d "x")
+               (third w)
+               (if (equal? (ghost-maze-check (third w) (fourth w) D-DIR-WALLS) #t)
+                   (begin
+                     (set! GHOST-DIR (random 1 5 (current-pseudo-random-generator)))
+                     (fourth w))
+                   (+ (fourth w) GHOST-SPEED))))
+          ((= GHOST-DIR 4);UP
+           (if (equal? d "x")
+               (third w)
+               (if (equal? (ghost-maze-check (third w) (fourth w) U-DIR-WALLS) #t)
+                   (begin
+                     (set! GHOST-DIR (random 1 5 (current-pseudo-random-generator)))
+                     (fourth w))
+                   (- (fourth w) GHOST-SPEED)))))))
+          ;(else 0))))
 
 ; GAME OVER MAN! GAME OVER!
 (define (game-over w)
