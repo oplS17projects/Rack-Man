@@ -8,7 +8,8 @@
          2htdp/image
          lang/posn
        ;  RSound
-         net/url)
+         net/url
+         net/sendurl)
 (require "coords.rkt")
 
 ; GLOBAL VARIABLES
@@ -29,6 +30,7 @@
 (define Y-OFFSET 13)
 (define OPEN 0)
 (define hsURL "")
+(define website "http://138.197.13.254")
 (define ip "http://138.197.13.254/addscore.php?name=")
 (define addAnd "&")
 (define scoreParam "score=")
@@ -566,6 +568,7 @@
     (call/input-url (string->url hsURL)
                 get-pure-port
                 port->string)
+    (send-url website)
   ;  (display hsURL)
    ; (display "\n")
     )
