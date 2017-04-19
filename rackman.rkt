@@ -14,6 +14,7 @@
 (define RIGHT #f)
 (define DOWN #f)
 (define UP #f)
+(define SCORE 0)
 (define NEXT-DIR 0)
 (define START #f)
 (define SPEED 2)
@@ -613,6 +614,8 @@
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
+                                                (set! SCORE (+ SCORE 1))
+                                                (display SCORE)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -625,6 +628,8 @@
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
+                                                (set! SCORE (+ SCORE 1))
+                                                (display SCORE)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -638,6 +643,8 @@
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
+                                                (set! SCORE (+ SCORE 1))
+                                                (display SCORE)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -651,6 +658,8 @@
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
+                                                (set! SCORE (+ SCORE 1))
+                                                (display SCORE)
                                                 #t)
                                               #f))
                                          (else #f)))
