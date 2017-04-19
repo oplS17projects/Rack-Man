@@ -7,7 +7,7 @@
 (require 2htdp/universe
          2htdp/image
          lang/posn
-         RSound
+       ;  RSound
          net/url)
 (require "coords.rkt")
 
@@ -28,7 +28,7 @@
 (define X-OFFSET 11)
 (define Y-OFFSET 11)
 (define OPEN 0)
-(define THEME (rs-read "./racktheme_01.wav"))
+;(define THEME (rs-read "./racktheme_01.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
 (define END-SCREEN (bitmap/file "./end.png"))
 (define MAZE (bitmap/file "./maze_v3.png"))
@@ -90,7 +90,7 @@
 (define (react w x)
   (cond ((key=? x "shift") (if(equal? START #f)
                               (begin
-                                (play THEME)
+                             ;   (play THEME)
                                 (set! START #t)
                                 (list 250 374 250 186)) ;; starting position of RackMan and Ghost
                               w))
