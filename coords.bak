@@ -1,7 +1,11 @@
 #lang racket
 
 (require lang/posn) 
-(provide (all-defined-out))
+(provide R-DIR-WALLS)
+(provide L-DIR-WALLS)
+(provide U-DIR-WALLS)
+(provide D-DIR-WALLS)
+(provide build-pel-xy)
 ;;; MAZE WALL COORDINATES ;;;
 (define R-DIR-WALLS
   (list (list 44 47 44 77) (list 133 47 133 77) (list 240 15 240 77) (list 294 47 294 77)
@@ -27,7 +31,7 @@
   (list (list 44 47 96 47) (list 133 47 203 47) (list 294 47 354 47) (list 401 47 453 47)
         (list 44 109 96 109) (list 133 109 150 109) (list 187 109 310 109) (list 347 109 364 109)
         (list 401 109 453 109) (list 8 156 96 156) (list 151 156 203 156) (list 294 156 346 156)
-        (list 401 156 489 156) (list 187 203 310 203) (list 133 250 145 250) (list 187 297 310 297)
+        (list 401 156 489 156) (list 187 203 310 203) (list 133 250 150 250) (list 187 297 310 297)
         (list 347 250 364 250) (list 401 250 488 250) (list 44 343 96 343) (list 133 343 203 343)
         (list 294 343 364 343) (list 401 343 453 343) (list 8 390 42 390) (list 44 437 203 437)
         (list 133 390 150 390) (list 187 390 310 390) (list 294 437 453 437) (list 347 390 364 390)
