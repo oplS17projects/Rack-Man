@@ -30,6 +30,7 @@
 (define Y-OFFSET 13)
 (define OPEN 0)
 (define hsURL "")
+(define WONGAME 0)
 (define website "http://138.197.13.254")
 (define ip "http://138.197.13.254/addscore.php?name=")
 (define addAnd "&")
@@ -523,11 +524,8 @@
 ; GAME OVER MAN! GAME OVER!
 (define (game-over w)
   (cond ((equal? w 0) #f)
-        ((equal? (check-ghost (list (first w) (second w)) (list (third w) (fourth w))) #t)
-         (begin
-           ;(set! MAZE (bitmap/file "./maze_game_over.png"))
-           ;(myWorld w)
-           #t))
+        ((equal? (check-ghost (list (first w) (second w)) (list (third w) (fourth w))) #t)#t)
+        ((equal? SCORE 268)(begin (set! WONGAME 1) #t))
         (else #f)))
 
 ; check the position of the ghost relative to rack-man
@@ -562,13 +560,19 @@
   (begin
     (set! NAME (read))
     (getHighScoresLink)
-    (send-url website)
-    )
-  (place-image (text "GAME OVER MAN! GAME OVER!" 24 "white")
+    (send-url website))
+  (if(equal? WONGAME 1)
+       (place-image (text "Woah, you actually won! GOOD JOB!" 24 "white")
+                   250 400 ; x y
+                   (place-image END-SCREEN
+                                250 250
+                                (rectangle 500 500 "outline" "black")))
+         (place-image (text "Game Over! Better luck next time!" 24 "white")
                    250 400 ; x y
                    (place-image END-SCREEN
                                 250 250
                                 (rectangle 500 500 "outline" "black"))))
+)
 ; WORLD
 (big-bang 0
           (on-tick tick-handler)
