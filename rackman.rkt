@@ -25,7 +25,8 @@
 (define GHOST-SPEED 1)
 (define GHOST-DIR 1)
 (define DEBUGGER 0)
-(define GHOST-OFFSET 11)
+(define GHOST-CHECK 10)
+(define GHOST-OFFSET 17)
 (define X-OFFSET 13)
 (define Y-OFFSET 13)
 (define OPEN 0)
@@ -533,14 +534,86 @@
 ; g -> '(x y) for ghost
 ; To account for the size of rack-man and the ghost, it recursively compares the next 10 values of the x/y
 (define (check-ghost r g)
-  (define (check-iter r_pos g_pos count)
-    (if (> count 0)
-        (if (equal? r_pos g_pos)
-            #t
-            (check-iter r_pos (add1 g_pos) (sub1 count)))
-        #f))
-  (cond ((and (equal? (check-iter (first r) (first g) 15) #t) (equal? (check-iter (second r) (second g) 15) #t)) #t)
+  (cond ((equal? LEFT #t)
+           (if (and (>= (first g) (- (first r) GHOST-CHECK)) (<= (first g) (first r)))
+                (if (and (>= (second g) (- (second r) GHOST-CHECK)) (<= (second g) (+ (second r) GHOST-CHECK)))
+                    #t
+                    #f)
+                #f))
+        ((equal? RIGHT #t)
+         (if (and (<= (first g) (+ (first r) GHOST-CHECK)) (>= (first g) (first r)))
+                (if (and (>= (second g) (- (second r) GHOST-CHECK)) (<= (second g) (+ (second r) GHOST-CHECK)))
+                    #t
+                    #f)
+                #f))
+        ((equal? UP #t)
+         (if (and (>= (second g) (- (second r) GHOST-CHECK)) (<= (second g) (second r)))
+                (if (and (>= (first g) (- (first r) GHOST-CHECK)) (<= (first g) (+ (first r) GHOST-CHECK)))
+                    #t
+                    #f)
+                #f))
+        ((equal? DOWN #t)
+         (if (and (<= (second g) (+ (second r) GHOST-CHECK)) (>= (second g) (second r)))
+                (if (and (>= (first g) (- (first r) GHOST-CHECK)) (<= (first g) (+ (first r) GHOST-CHECK)))
+                    #t
+                    #f)
+                #f))))
+  #|
+  (define (check-iter-x r_pos g_pos count)
+    (cond ((equal? LEFT #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-x r_pos (sub1 g_pos) (sub1 count)))
+               #f))
+          ((equal? RIGHT #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-x r_pos (add1 g_pos) (sub1 count)))
+               #f))
+          ((equal? UP #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-x r_pos (sub1 g_pos) (sub1 count)))
+               #f))
+          ((equal? DOWN #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-x r_pos (add1 g_pos) (sub1 count)))
+               #f))))
+  (define (check-iter-y r_pos g_pos count)
+    (cond ((equal? LEFT #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-y r_pos (sub1 g_pos) (sub1 count)))
+               #f))
+          ((equal? RIGHT #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-y r_pos (add1 g_pos) (sub1 count)))
+               #f))
+          ((equal? UP #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-y r_pos (sub1 g_pos) (sub1 count)))
+               #f))
+          ((equal? DOWN #t)
+           (if (> count 0)
+               (if (equal? r_pos g_pos)
+                   #t
+                   (check-iter-y r_pos (add1 g_pos) (sub1 count)))
+               #f))))
+  (cond ((and (equal? (check-iter-x (first r) (first g) 22) #t) (equal? (check-iter-y (second r) (second g) 22) #t)) #t)
         (else #f)))
+  |#
+
+
 (define(getHighScoresLink)
   (begin
     (set! hsURL (string-append ip (~a NAME)))
