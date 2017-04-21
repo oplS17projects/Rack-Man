@@ -17,7 +17,7 @@
 (define RIGHT #f)
 (define DOWN #f)
 (define UP #f)
-(define NAME "")
+(define NAME "RackManPlayer")
 (define SCORE 0)
 (define NEXT-DIR 0)
 (define START #f)
@@ -42,7 +42,7 @@
 (define RACKMAN (bitmap/file "./rackman_right.png"))
 (define INKY (bitmap/file "./inky.png"))
 (define PELLET (circle 3 "solid" "white"))
-(define SCENE (rectangle 500 500 "solid" "black"))
+(define SCENE (rectangle 500 515 "solid" "black"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -70,6 +70,7 @@
   (if (list? t)
       ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw
       (begin
+        (text "Score: " 24 "indigo")
         (place-image RACKMAN;(scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
                      (car t)  ; x
                      (cadr t) ; y
@@ -79,7 +80,9 @@
                                   (place-image MAZE
                                                250 250
                                                ;SCENE)))
-                                               (place-images PEL-IMG PEL-POS SCENE))));(rectangle 500 500 "solid" "black")))))
+                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a SCORE) 24 "white") 85 505 SCENE))))))
+        ;(rectangle 500 500 "solid" "black")))))
+
         )
                                                ;(rectangle 500 500 "solid" "black"))))
       ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen
@@ -418,9 +421,6 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (display "Current Score: ")
-                                                (display SCORE)
-                                                (display "\n")
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -434,9 +434,6 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (display "Current Score: ")
-                                                (display SCORE)
-                                                (display "\n")
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -451,9 +448,6 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (display "Current Score: ")
-                                                (display SCORE)
-                                                (display "\n")
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -468,9 +462,6 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (display "Current Score: ")
-                                                (display SCORE)
-                                                (display "\n")
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -552,25 +543,26 @@
         #f))
   (cond ((and (equal? (check-iter (first r) (first g) 15) #t) (equal? (check-iter (second r) (second g) 15) #t)) #t)
         (else #f)))
-
-; NOT COMPLETE YET 
-; Dipsplay Local high-score
-(define (high-score w)
-  ;;TEMPORARY SOLUTION FOR NAME
+(define(getHighScoresLink)
   (begin
-    ;(set! MAZE (bitmap/file "./maze_game_over.png"))
-    ;(myWorld w)
-    (set! NAME (read))
     (set! hsURL (string-append ip (~a NAME)))
     (set! hsURL (string-append hsURL addAnd))
     (set! hsURL (string-append hsURL scoreParam))
     (set! hsURL (string-append (~a hsURL SCORE)))
     (call/input-url (string->url hsURL)
                 get-pure-port
-                port->string)
+                port->string))
+  )
+
+; High Scores to save online
+; 1. Gets the user's name from the terminal
+; 2. Constructs the link for the high scores and sends it to the web server
+; 3. Opens the high score page for users to check out
+(define (high-score w)
+  (begin
+    (set! NAME (read))
+    (getHighScoresLink)
     (send-url website)
-  ;  (display hsURL)
-   ; (display "\n")
     )
   (place-image (text "GAME OVER MAN! GAME OVER!" 24 "white")
                    250 400 ; x y
