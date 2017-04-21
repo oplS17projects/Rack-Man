@@ -26,7 +26,7 @@
 (define GHOST-DIR 1)
 (define DEBUGGER 0)
 (define GHOST-CHECK 10)
-(define GHOST-OFFSET 8)
+(define GHOST-OFFSET 6)
 (define X-OFFSET 13)
 (define Y-OFFSET 13)
 (define OPEN 0)
@@ -489,10 +489,6 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) L-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (display "decision changes to ")
-                     (display GHOST-DIR)
-                     (display "\n")
-                     ;(set! GHOST-DIR 3)
                      (third w))
                    (- (third w) GHOST-SPEED))
                (fourth w)))
@@ -501,10 +497,6 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) R-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (display "decision changes to ")
-                     (display GHOST-DIR)
-                     (display "\n")
-                     ;(set! GHOST-DIR 4)
                      (third w))
                    (+ (third w) GHOST-SPEED))
                (fourth w)))
@@ -514,10 +506,6 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) D-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (display "decision changes to ")
-                     (display GHOST-DIR)
-                     (display "\n")
-                     ;(set! GHOST-DIR 1)
                      (fourth w))
                    (+ (fourth w) GHOST-SPEED))))
           ((= GHOST-DIR 4);UP
@@ -526,10 +514,6 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) U-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (display "decision changes to ")
-                     (display GHOST-DIR)
-                     (display "\n")
-                     ;(set! GHOST-DIR 2)
                      (fourth w))
                    (- (fourth w) GHOST-SPEED)))))))
           ;(else 0))))
@@ -539,6 +523,7 @@
 (define (next-ghost-dir gx gy rx ry)
   (cond ((equal? GHOST-DIR 1);LEFT
          (begin
+           #|
            (display "i made it")
            (display "\n")
            (display gx)
@@ -550,7 +535,7 @@
            (display ry)
            (display "\n")
            (display GHOST-DIR)
-           (display "\n")
+           (display "\n")|#
          (if (<= rx gx)
              (if (>= ry gy);;pick between up and down
                  (cond ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3); move down if possible
@@ -560,7 +545,7 @@
                        ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3); if not, move down if possible
                        ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2)); if not move right
                  )
-             (if (<= (abs (- gx rx)) (abs (- gy ry)));;pick between up and down and right
+             (if (>= (abs (- gx rx)) (abs (- gy ry)));;pick between up and down and right
                  (cond ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2) ; move right if possible
                        ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4)
                        ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3))
@@ -582,7 +567,7 @@
                        ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3); if not, move down if possible
                        ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1)); if not move left
                  )
-             (if (<= (abs (- gx rx)) (abs (- gy ry)));;pick between up and down and left
+             (if (>= (abs (- gx rx)) (abs (- gy ry)));;pick between up and down and left
                  (cond ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); move left if possible
                        ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4); if not, move up if possible
                        ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3)); if not move down
@@ -605,17 +590,17 @@
                        ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4)); if not move up
                  )
              (if (<= (abs (- gy ry)) (abs (- gx rx)));;pick between left and righ and up
-                 (cond ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4); move up if possible
-                       ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); if not, move left if possible
-                       ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2)); if not move right
                  (if (>= rx gx);;pick between left and right
                      (cond ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2); move right if possible
                            ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); if not, move left if possible
                            ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4)); if not move up
                      (cond ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); move left if possible
                            ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2); if not, move right if possible
-                           ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4)); if not move up
-                     ))))
+                           ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4))); if not move up
+                  (cond ((equal? (ghost-maze-check gx gy U-DIR-WALLS) #f) 4); move up if possible
+                       ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); if not, move left if possible
+                       ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2)); if not move right
+                     )))
         ((equal? GHOST-DIR 4);UP
          (if (<= ry gy)
              (if (>= rx gx);;pick between left and right
@@ -627,17 +612,17 @@
                        ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3)); if not move down
                  )
              (if (<= (abs (- gy ry)) (abs (- gx rx)));;pick between left and righ and down
-                 (cond ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3); move down if possible
-                       ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); if not, move left if possible
-                       ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2)); if not move right
                  (if (>= rx gx);;pick between left and right
                      (cond ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2); move right if possible
                            ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); if not, move left if possible
                            ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3)); if not move down
                      (cond ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); move left if possible
                            ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2); if not, move right if possible
-                           ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3)); if not move down
-                     ))))))
+                           ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3))); if not move down
+                 (cond ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3); move down if possible
+                       ((equal? (ghost-maze-check gx gy L-DIR-WALLS) #f) 1); if not, move left if possible
+                       ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2)); if not move right
+                     )))))
 
 ; GAME OVER MAN! GAME OVER!
 (define (game-over w)
