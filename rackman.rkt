@@ -33,8 +33,8 @@
 (define OPEN 0)
 (define hsURL "")
 (define WONGAME 0)
-(define website "http://138.197.13.254")
-(define ip "http://138.197.13.254/addscore.php?name=")
+(define website "http://107.170.57.126")
+(define ip "http://107.170.57.126/addscore.php?name=")
 (define addAnd "&")
 (define scoreParam "score=")
 ;(define THEME (rs-read "./racktheme_01.wav"))
@@ -733,7 +733,7 @@
 ; 3. Opens the high score page for users to check out
 (define (high-score w)
   (begin
-    ;(set! NAME (read))
+    (set! NAME (read))
     (getHighScoresLink)
     (send-url website))
   (if(equal? WONGAME 1)
