@@ -372,6 +372,24 @@
                                            ((and (<= x (+ (first wall) GHOSTX-OFFSET)) (>= x (first wall))) ;; check if ghost is lined up along X with any walls
                                             (if (and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (+ (fourth wall) GHOSTY-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
+                                                #|
+                                                (begin(display "LEFT: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          ;(display " \n")
+                                                          (display " ghost: ")
+                                                          (display x)
+                                                          (display " , ")
+                                                          (display y)
+                                                          (display "\n")
+                                                          #t)
+                                                |#
                                                 #f))
                                            (else #f)))
                   #f
@@ -381,6 +399,24 @@
                                            ((and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (first wall))) ;; check if ghost is lined up along X with any walls
                                             (if (and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (+ (fourth wall) GHOSTY-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
+                                                #|
+                                                (begin(display "RIGHT: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          ;(display " \n")
+                                                          (display " ghost: ")
+                                                          (display x)
+                                                          (display " , ")
+                                                          (display y)
+                                                          (display "\n")
+                                                          #t)
+                                                |#
                                                 #f))
                                            (else #f)))
                   #f
@@ -391,6 +427,24 @@
                                            ((and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (second wall))) ;; check if ghost is is lined up along Y with any walls
                                             (if (and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (+ (third wall) GHOSTX-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
+                                                #|
+                                                (begin(display "DOWN: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          ;(display " \n")
+                                                          (display " ghost: ")
+                                                          (display x)
+                                                          (display " , ")
+                                                          (display y)
+                                                          (display "\n")
+                                                          #t)
+                                                |#
                                                 #f))
                                            (else #f)))
                   #f
@@ -401,6 +455,24 @@
                                            ((and (<= y (+ (second wall) GHOSTY-OFFSET)) (>= y (second wall))) ;; check if ghost is is lined up along Y with any walls
                                             (if (and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (+ (third wall) GHOSTX-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
+                                                #|
+                                                (begin(display "UP: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          ;(display " \n")
+                                                          (display " ghost: ")
+                                                          (display x)
+                                                          (display " , ")
+                                                          (display y)
+                                                          (display "\n")
+                                                          #t)
+                                                |#
                                                 #f))
                                            (else #f)))
                   #f
@@ -489,7 +561,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) L-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (third w))
+                     (+ (third w) 2));(third w)) added bounce back 
                    (- (third w) GHOST-SPEED))
                (fourth w)))
           ((= GHOST-DIR 2);RIGHT
@@ -497,7 +569,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) R-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (third w))
+                     (- (third w) 2));(third w))
                    (+ (third w) GHOST-SPEED))
                (fourth w)))
           ((= GHOST-DIR 3);DOWN
@@ -506,7 +578,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) D-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (fourth w))
+                     (- (fourth w) 2));(fourth w))
                    (+ (fourth w) GHOST-SPEED))))
           ((= GHOST-DIR 4);UP
            (if (equal? d "x")
@@ -514,7 +586,7 @@
                (if (equal? (ghost-maze-check (third w) (fourth w) U-DIR-WALLS) #t)
                    (begin
                      (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (fourth w))
+                     (+ (fourth w) 2));(fourth w))
                    (- (fourth w) GHOST-SPEED)))))))
           ;(else 0))))
 
