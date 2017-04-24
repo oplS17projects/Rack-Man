@@ -22,13 +22,14 @@
 (define NEXT-DIR 0)
 (define START #f)
 (define SPEED 2)
-(define GHOST-SPEED 1)
+(define GHOST-SPEED 2)
 (define GHOST-DIR 1)
 (define DEBUGGER 0)
-(define GHOST-CHECK 10)
-(define GHOST-OFFSET 6)
-(define X-OFFSET 13)
-(define Y-OFFSET 13)
+(define GHOST-CHECK 13)
+(define GHOSTX-OFFSET 8)
+(define GHOSTY-OFFSET 10)
+(define X-OFFSET 10)
+(define Y-OFFSET 10)
 (define OPEN 0)
 (define hsURL "")
 (define WONGAME 0)
@@ -72,7 +73,6 @@
   (if (list? t)
       ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw
       (begin
-        (text "Score: " 24 "indigo")
         (place-image RACKMAN;(scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates
                      (car t)  ; x
                      (cadr t) ; y
@@ -82,7 +82,7 @@
                                   (place-image MAZE
                                                250 250
                                                ;SCENE)))
-                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a SCORE) 24 "white") 85 505 SCENE))))))
+                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a SCORE) 24 "white") 87 505 SCENE))))))
         ;(rectangle 500 500 "solid" "black")))))
 
         )
@@ -369,8 +369,8 @@
   (begin
     (cond ((equal? lst L-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ((and (<= x (+ (first wall) GHOST-OFFSET)) (>= x (first wall))) ;; check if ghost is lined up along X with any walls
-                                            (if (and (>= y (- (second wall) GHOST-OFFSET)) (<= y (+ (fourth wall) GHOST-OFFSET))) ;; check if ghost is is lined up along Y with any walls
+                                           ((and (<= x (+ (first wall) GHOSTX-OFFSET)) (>= x (first wall))) ;; check if ghost is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (+ (fourth wall) GHOSTY-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -378,8 +378,8 @@
                   lst))
           ((equal? lst R-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ((and (>= x (- (first wall) GHOST-OFFSET)) (<= x (first wall))) ;; check if ghost is lined up along X with any walls
-                                            (if (and (>= y (- (second wall) GHOST-OFFSET)) (<= y (+ (fourth wall) GHOST-OFFSET))) ;; check if ghost is is lined up along Y with any walls
+                                           ((and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (first wall))) ;; check if ghost is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (+ (fourth wall) GHOSTY-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -388,8 +388,8 @@
           ((equal? lst D-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((>= y (- (second wall) OFFSET))
-                                           ((and (>= y (- (second wall) GHOST-OFFSET)) (<= y (second wall))) ;; check if ghost is is lined up along Y with any walls
-                                            (if (and (>= x (- (first wall) GHOST-OFFSET)) (<= x (+ (third wall) GHOST-OFFSET))) ;; check if ghost is lined up along X with any walls
+                                           ((and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (second wall))) ;; check if ghost is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (+ (third wall) GHOSTX-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -398,8 +398,8 @@
           ((equal? lst U-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                            ;((<= y (+ (second wall) 12))
-                                           ((and (<= y (+ (second wall) GHOST-OFFSET)) (>= y (second wall))) ;; check if ghost is is lined up along Y with any walls
-                                            (if (and (>= x (- (first wall) GHOST-OFFSET)) (<= x (+ (third wall) GHOST-OFFSET))) ;; check if ghost is lined up along X with any walls
+                                           ((and (<= y (+ (second wall) GHOSTY-OFFSET)) (>= y (second wall))) ;; check if ghost is is lined up along Y with any walls
+                                            (if (and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (+ (third wall) GHOSTX-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
                                                 #f))
                                            (else #f)))
@@ -417,8 +417,8 @@
 (define (check-pel x y)
   (cond ((equal? LEFT #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (<= x (+ (posn-x pel) GHOST-OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
-                                          (if (and (>= y (- (posn-y pel) GHOST-OFFSET)) (<= y (+ (posn-y pel) GHOST-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
+                                         ((and (<= x (+ (posn-x pel) X-OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (+ (posn-y pel) Y-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -430,8 +430,8 @@
                 PEL-POS))
         ((equal? RIGHT #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ((and (>= x (- (posn-x pel) GHOST-OFFSET)) (<= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
-                                          (if (and (>= y (- (posn-y pel) GHOST-OFFSET)) (<= y (+ (posn-y pel) GHOST-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
+                                         ((and (>= x (- (posn-x pel) X-OFFSET)) (<= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
+                                          (if (and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (+ (posn-y pel) Y-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -444,8 +444,8 @@
         ((equal? DOWN #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((>= y (- (second wall) OFFSET))
-                                         ((and (>= y (- (posn-y pel) GHOST-OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
-                                          (if (and (>= x (- (posn-x pel) GHOST-OFFSET)) (<= x (+ (posn-x pel) GHOST-OFFSET))) ;; check if rackman is lined up along X with any pellets
+                                         ((and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) X-OFFSET)) (<= x (+ (posn-x pel) X-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -458,8 +458,8 @@
         ((equal? UP #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ;((<= y (+ (second wall) 12))
-                                         ((and (<= y (+ (posn-y pel) GHOST-OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
-                                          (if (and (>= x (- (posn-x pel) GHOST-OFFSET)) (<= x (+ (posn-x pel) GHOST-OFFSET))) ;; check if rackman is lined up along X with any pellets
+                                         ((and (<= y (+ (posn-y pel) Y-OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
+                                          (if (and (>= x (- (posn-x pel) X-OFFSET)) (<= x (+ (posn-x pel) X-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
@@ -733,7 +733,7 @@
 ; 3. Opens the high score page for users to check out
 (define (high-score w)
   (begin
-    (set! NAME (read))
+    ;(set! NAME (read))
     (getHighScoresLink)
     (send-url website))
   (if(equal? WONGAME 1)
