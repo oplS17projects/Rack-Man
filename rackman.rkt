@@ -7,7 +7,7 @@
 (require 2htdp/universe
          2htdp/image
          lang/posn
-       ;  RSound
+         RSound
          net/url
          net/sendurl)
 (require "coords.rkt")
@@ -37,7 +37,8 @@
 (define ip "http://107.170.57.126/addscore.php?name=")
 (define addAnd "&")
 (define scoreParam "score=")
-;(define THEME (rs-read "./racktheme_01.wav"))
+(define THEME (rs-read "./racktheme_01.wav"))
+(define EATSOUND (rs-read "./pacman_chomp.wav"))
 (define SPLASH (bitmap/file "./splash.png"))
 (define END-SCREEN (bitmap/file "./end.png"))
 (define MAZE (bitmap/file "./maze_v3.png"))
@@ -109,9 +110,8 @@
                               (begin
                                 ;(display PEL-POS)
                                 ;(display PEL-IMG)
-                                ;(play THEME)
-                                ;(set! NAME (read))
-                                
+                                (default-sample-rate 44100)
+                                (play THEME)                                
                                 (set! START #t)
                                 (list 250 374 250 186))  ;; starting position of RackMan and Ghost
                               w))
@@ -495,6 +495,7 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
+                                                (play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -508,6 +509,7 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
+                                                (play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -522,6 +524,7 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
+                                                (play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -536,6 +539,7 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
+                                                (play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
