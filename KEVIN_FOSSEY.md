@@ -84,9 +84,28 @@ In class there was a heavy focus on recursion, and the different ways to utilize
   
 There is an intial call in the main source file ```(define PEL-POS (build-pel-xy 25 35))``` which calls ```build-pel-xy``` with the starting cooridinates of the first pellet in the upper left corner of the maze. ```build-pel-xy``` then calls its helper function ```builder-xy``` with ```(builder-xy x y 0 '())``` to start. Passing 0 as the ```count``` parameter, and ```'()``` as the initial list.  
   
-Then, ```builder-xy``` uses a series of ```cond``` statements to determine a starting point of cooridinates 
+Then, ```builder-xy``` uses a series of ```cond``` statements to determine a starting point for coordinates (changing the x or y values to start the building of a new row/collum, based on the current value of the count) and recurses, passing an updated x/y, an updated count, and appending the new x/y to the list argument and passing the updated list as well.  
   
-## 3. ---  
+The end result is a list of positions that can be used with ```2htdp/image```'s ```place-images``` function to draw all the pellets in one simple call.  
+  
+## 3. Data Abstraction  
+  
+The same procedure mentioned above, ```builder-pel-xy``` also utilizes another idea from the class. Data Abstraction.  
+  
+The ```lang/posn``` library provided the position object that we used for the pellet locations.  
+
+  In the code below  
+```(builder-xy (+ x 18) y (add1 count) (append lst (list (make-posn x y)))```  
+  
+the ```make-posn``` call is a constructor for the ```posn``` struct. Like the examples in class (ps2b) ```make-posn``` creates an object that we can use to manage an x and y value for an image objects position.  
+  
+in the ```check-pel``` procedure I used the ```posn-x``` and ```posn-y``` getters to get the data from these objects, so I could check to see if the player is close enough to collect it, which can be seen the code exceprt below  
+```  
+...  
+((and (<= x (+ (posn-x pel) X-OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets  
+                                          (if (and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (+ (posn-y pel) Y-OFFSET))) ;; check if rackman is is lined up along Y with any pellets  
+...  
+```  
   
 ## 4. ---  
   
