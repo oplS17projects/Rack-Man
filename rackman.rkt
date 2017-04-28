@@ -1,7 +1,12 @@
 #lang racket
-;; RACK-MAN
-;; Kevin Fossey @kfozz
-;; Mohammed Nayeem @mohammednayeem
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;;;;;;;;;;; RACK-MAN ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;; WRITTEN BY ;;;;;;;;;;;;;;
+;;      Kevin Fossey @kfozz        ;;
+;; Mohammed Nayeem @mohammednayeem ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; a reaction of pac-man in racket ;;
 
 ; Libraries
 (require 2htdp/universe
@@ -42,7 +47,6 @@
 (define SPLASH (bitmap/file "./splash.png"))
 (define END-SCREEN (bitmap/file "./end.png"))
 (define MAZE (bitmap/file "./maze_v3.png"))
-;(define RACKMAN (bitmap/file "./rackman_right_c.png"))
 (define RACKMAN (bitmap/file "./rackman_right.png"))
 (define INKY (bitmap/file "./inky.png"))
 (define PELLET (circle 3 "solid" "white"))
@@ -50,10 +54,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
 (define PEL-POS (build-pel-xy 25 35)) ;; Makes the call to build the list of posn objects for the pellets
 
+;;;;;;;;;;;;;;;;;;;;;;; 
+;;;; BUILD-PEL-IMG ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
 ;returns a list of image objects equal to the number of positions created above
 (define (build-pel-img img)
   (define (builder-img count img lst)
@@ -67,10 +72,11 @@
 (define PELLETS (length PEL-POS)) ;; variable to hold the number of pellets
  
 
-
-; DRAW THE WORLD
+;;;;;;;;;;;;;;;;;;;; 
+;;;; DRAW-WORLD ;;;;
+;;;;;;;;;;;;;;;;;;;;
 ; take in the world state 't' and render the appropriate scene
-(define (myWorld t) ;<-- the t-parameter is our WorldState
+(define (draw-world t) ;<-- the t-parameter is our WorldState
   (if (list? t)
       ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw
       (begin
@@ -82,158 +88,71 @@
                                   (fourth t) ; y
                                   (place-image MAZE
                                                250 250
-                                               ;SCENE)))
-                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a SCORE) 24 "white") 87 505 SCENE))))))
-        ;(rectangle 500 500 "solid" "black")))))
-
-        )
-                                               ;(rectangle 500 500 "solid" "black"))))
+                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a SCORE) 24 "white") 87 505 SCENE)))))))
       ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen
       (place-image (text "Press Shift to Start!" 24 "white")
                    250 400 ; x y
                    (place-image SPLASH
                                 250 250
                                 SCENE))))
-                                ;(rectangle 500 500 "outline" "black")))))
 
 
-; KEY PRESS HANDLER
+;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;;; KEY-PRESS-HANDLER  ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; if the user presses any arrow key, update the state variable for those keys, and reset the state for each other key
-(define (react w x)
+(define (key-press-handler w x)
   (cond ((key=? x "shift") (if(equal? START #f)
                               (begin
-                             ;   (play THEME)
+                                ;(play THEME)
                                 (set! START #t)
                                 (list 250 374 250 186)) ;; starting position of RackMan and Ghost
                               w))
         ((key=? x "rshift") (if(equal? START #f)
                               (begin
-                                ;(display PEL-POS)
-                                ;(display PEL-IMG)
                                 (default-sample-rate 44100)
                                 (play THEME)                                
                                 (set! START #t)
                                 (list 250 374 250 186))  ;; starting position of RackMan and Ghost
                               w))
         ((key=? x "left") (begin
-                            ;(set! RACKMAN (bitmap/file "./rackman_left_c.png"))
                             (set! RACKMAN (bitmap/file "./rackman_left.png"))
                             (set! LEFT #t)
                             (set! RIGHT #f)
                             (set! DOWN #f)
                             (set! UP #f)
                             w))
-         #|(if (equal? (maze-check (- (first w) 7) (second w) L-DIR-WALLS) #t)
-             (begin
-               (set! NEXT-DIR 1)
-               w)
-             (begin
-               ;(set! RACKMAN (bitmap/file "./rackman_left_c.png"))
-               (set! RACKMAN (bitmap/file "./rackman_left.png"))
-               (set! LEFT #t)
-               (set! RIGHT #f)
-               (set! DOWN #f)
-               (set! UP #f)
-               w)))|#
         ((key=? x "right") (begin
-                             ;(set! RACKMAN (bitmap/file "./rackman_right_c.png"))
                              (set! RACKMAN (bitmap/file "./rackman_right.png"))
                              (set! LEFT #f)
                              (set! RIGHT #t)
                              (set! DOWN #f)
                              (set! UP #f)
                              w))
-         #|(if (equal? (maze-check (+ (first w) 7) (second w) R-DIR-WALLS) #t)
-             (begin
-               (set! NEXT-DIR 2)
-               w)
-             (begin
-               ;(set! RACKMAN (bitmap/file "./rackman_right_c.png"))
-               (set! RACKMAN (bitmap/file "./rackman_right.png"))
-               (set! LEFT #f)
-               (set! RIGHT #t)
-               (set! DOWN #f)
-               (set! UP #f)
-               w))|#
         ((key=? x "up") (begin
-                          ;(set! RACKMAN (bitmap/file "./rackman_up_c.png"))
                           (set! RACKMAN (bitmap/file "./rackman_up.png"))
                           (set! LEFT #f)
                           (set! RIGHT #f)
                           (set! DOWN #f)
                           (set! UP #t)
                           w))
-         #|(if (equal? (maze-check (first w) (- (second w) 7) U-DIR-WALLS) #t)
-             (begin
-               (set! NEXT-DIR 3)
-               w)
-             (begin
-               ;(set! RACKMAN (bitmap/file "./rackman_up_c.png"))
-               (set! RACKMAN (bitmap/file "./rackman_up.png"))
-               (set! LEFT #f)
-               (set! RIGHT #f)
-               (set! DOWN #f)
-               (set! UP #t)
-               w)))|#
         ((key=? x "down") (begin
-                            ;(set! RACKMAN (bitmap/file "./rackman_down_c.png"))
                             (set! RACKMAN (bitmap/file "./rackman_down.png"))
                             (set! LEFT #f)
                             (set! RIGHT #f)
                             (set! DOWN #t)
                             (set! UP #f)
                             w))
-         #|(if (equal? (maze-check (first w) (+ (second w) 7) D-DIR-WALLS) #t)
-             (begin
-               (set! NEXT-DIR 4)
-               w)
-             (begin
-               ;(set! RACKMAN (bitmap/file "./rackman_down_c.png"))
-               (set! RACKMAN (bitmap/file "./rackman_down.png"))
-               (set! LEFT #f)
-               (set! RIGHT #f)
-               (set! DOWN #t)
-               (set! UP #f)
-               w)))|#
         (else w))) ; any other key press, just return an unaltered world state
 
-; ON TICK HANDLER
+;;;;;;;;;;;;;;;;;;;;;; 
+;;;; TICK-HANDLER ;;;;
+;;;;;;;;;;;;;;;;;;;;;;
 ; every tick (default 28/second),
 ;  check the state for the key presses
 ;  if the state is true, move rackman in that direction by updating his X,Y cooridantes
 (define (tick-handler w)
   (begin
-    #|
-    (cond ((= NEXT-DIR 1)
-           (begin
-             (set! NEXT-DIR 0)
-             (set! LEFT #t)
-             (set! RIGHT #f)
-             (set! DOWN #f)
-             (set! UP #f)))
-          ((= NEXT-DIR 2)
-           (begin
-             (set! NEXT-DIR 0)
-             (set! LEFT #f)
-             (set! RIGHT #t)
-             (set! DOWN #f)
-             (set! UP #f)))
-          ((= NEXT-DIR 3)
-           (begin
-             (set! NEXT-DIR 0)
-             (set! LEFT #f)
-             (set! RIGHT #f)
-             (set! DOWN #f)
-             (set! UP #t)))
-          ((= NEXT-DIR 4)
-           (begin
-             (set! NEXT-DIR 0)
-             (set! LEFT #f)
-             (set! RIGHT #f)
-             (set! DOWN #t)
-             (set! UP #f)))
-          (else 0))
-    |#
     (if (equal? w 0)
         w
         (cond ((not (list? w)) w)
@@ -241,14 +160,12 @@
               ((equal? LEFT #t)
                (if (equal? (maze-check (car w) (cadr w) L-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
-                   ;(list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
                    ; move to the opposite end when passing through the left opening
                    (cond ((<= (car w) 0) (list (+ (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))
                          (else (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))
               ((equal? RIGHT #t)
                (if (equal? (maze-check (car w) (cadr w) R-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
-                   ;(list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))
                    ; move to the opposite end when passing through the right opening
                    (cond ((>= (car w) 500) (list (- (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))
                          (else (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))
@@ -270,8 +187,8 @@
 ;;; lst -> The list of walls that Rack-man could run into given his current direction
 ;;; using foldl to check Rack-Mans x or y (check x if moving left/right, check y if moving up/down)
 ;;  against each element in the wall list. If a match is found, 
-;;; Returns #t if a collision is detected
-;;; Returns #f if no collision is detected
+;;; Returns #t if a collision is detected (match found)
+;;; Returns #f if no collision is detected (no match found)
 (define (maze-check x y lst)
   (begin
     (if (equal? (check-pel x y) #t)
@@ -321,7 +238,6 @@
                   lst))
           ((equal? lst D-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ;((>= y (- (second wall) OFFSET))
                                            ((and (>= y (- (second wall) Y-OFFSET)) (<= y (second wall))) ;; check if rackman is is lined up along Y with any walls
                                             (if (and (>= x (- (first wall) X-OFFSET)) (<= x (+ (third wall) X-OFFSET))) ;; check if rackman is lined up along X with any walls
                                                 (begin
@@ -343,7 +259,6 @@
                   lst))
           ((equal? lst U-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ;((<= y (+ (second wall) 12))
                                            ((and (<= y (+ (second wall) Y-OFFSET)) (>= y (second wall))) ;; check if rackman is is lined up along Y with any walls
                                             (if (and (>= x (- (first wall) X-OFFSET)) (<= x (+ (third wall) X-OFFSET))) ;; check if rackman is lined up along X with any walls
                                                 (begin
@@ -365,6 +280,16 @@
                   lst))
           (else #f))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;; 
+;;;; GHOST-MAZE-CHECK ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; x -> Ghost x pos
+;;; y -> Ghost y pos
+;;; lst -> The list of walls that the ghost could run into given his current direction
+;;; using foldl to check the ghosts x or y (check x if moving left/right, check y if moving up/down)
+;;  against each element in the wall list. If a match is found, 
+;;; Returns #t if a collision is detected (match found)
+;;; Returns #f if no collision is detected (no match found)
 (define (ghost-maze-check x y lst)
   (begin
     (cond ((equal? lst L-DIR-WALLS) ;#f)
@@ -372,24 +297,6 @@
                                            ((and (<= x (+ (first wall) GHOSTX-OFFSET)) (>= x (first wall))) ;; check if ghost is lined up along X with any walls
                                             (if (and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (+ (fourth wall) GHOSTY-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
-                                                #|
-                                                (begin(display "LEFT: (")
-                                                          (display (first wall))
-                                                          (display " ")
-                                                          (display (second wall))
-                                                          (display " ")
-                                                          (display (third wall))
-                                                          (display " ")
-                                                          (display (fourth wall))
-                                                          (display ")")
-                                                          ;(display " \n")
-                                                          (display " ghost: ")
-                                                          (display x)
-                                                          (display " , ")
-                                                          (display y)
-                                                          (display "\n")
-                                                          #t)
-                                                |#
                                                 #f))
                                            (else #f)))
                   #f
@@ -399,89 +306,33 @@
                                            ((and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (first wall))) ;; check if ghost is lined up along X with any walls
                                             (if (and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (+ (fourth wall) GHOSTY-OFFSET))) ;; check if ghost is is lined up along Y with any walls
                                                 #t
-                                                #|
-                                                (begin(display "RIGHT: (")
-                                                          (display (first wall))
-                                                          (display " ")
-                                                          (display (second wall))
-                                                          (display " ")
-                                                          (display (third wall))
-                                                          (display " ")
-                                                          (display (fourth wall))
-                                                          (display ")")
-                                                          ;(display " \n")
-                                                          (display " ghost: ")
-                                                          (display x)
-                                                          (display " , ")
-                                                          (display y)
-                                                          (display "\n")
-                                                          #t)
-                                                |#
                                                 #f))
                                            (else #f)))
                   #f
                   lst))
           ((equal? lst D-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ;((>= y (- (second wall) OFFSET))
                                            ((and (>= y (- (second wall) GHOSTY-OFFSET)) (<= y (second wall))) ;; check if ghost is is lined up along Y with any walls
                                             (if (and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (+ (third wall) GHOSTX-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
-                                                #|
-                                                (begin(display "DOWN: (")
-                                                          (display (first wall))
-                                                          (display " ")
-                                                          (display (second wall))
-                                                          (display " ")
-                                                          (display (third wall))
-                                                          (display " ")
-                                                          (display (fourth wall))
-                                                          (display ")")
-                                                          ;(display " \n")
-                                                          (display " ghost: ")
-                                                          (display x)
-                                                          (display " , ")
-                                                          (display y)
-                                                          (display "\n")
-                                                          #t)
-                                                |#
                                                 #f))
                                            (else #f)))
                   #f
                   lst))
           ((equal? lst U-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                           ;((<= y (+ (second wall) 12))
                                            ((and (<= y (+ (second wall) GHOSTY-OFFSET)) (>= y (second wall))) ;; check if ghost is is lined up along Y with any walls
                                             (if (and (>= x (- (first wall) GHOSTX-OFFSET)) (<= x (+ (third wall) GHOSTX-OFFSET))) ;; check if ghost is lined up along X with any walls
                                                 #t
-                                                #|
-                                                (begin(display "UP: (")
-                                                          (display (first wall))
-                                                          (display " ")
-                                                          (display (second wall))
-                                                          (display " ")
-                                                          (display (third wall))
-                                                          (display " ")
-                                                          (display (fourth wall))
-                                                          (display ")")
-                                                          ;(display " \n")
-                                                          (display " ghost: ")
-                                                          (display x)
-                                                          (display " , ")
-                                                          (display y)
-                                                          (display "\n")
-                                                          #t)
-                                                |#
                                                 #f))
                                            (else #f)))
                   #f
                   lst))
           (else #f))))
 
-;;;;;;;;;;;;;;;;;;;;;;; 
-;;;; CHECK PELLETS ;;;;
-;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;; 
+;;;; CHECK-PEL ;;;;
+;;;;;;;;;;;;;;;;;;;
 ;;; x -> Rack-Mans x pos
 ;;; y -> Rack-mans y pos
 ;;; check if rackmans position matches the position of any pellets,
@@ -495,7 +346,7 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (play EATSOUND)
+                                                ;(play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -509,7 +360,7 @@
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (play EATSOUND)
+                                                ;(play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -517,14 +368,13 @@
                 PEL-POS))
         ((equal? DOWN #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ;((>= y (- (second wall) OFFSET))
                                          ((and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
                                           (if (and (>= x (- (posn-x pel) X-OFFSET)) (<= x (+ (posn-x pel) X-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (play EATSOUND)
+                                                ;(play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -532,14 +382,13 @@
                 PEL-POS))
         ((equal? UP #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
-                                         ;((<= y (+ (second wall) 12))
                                          ((and (<= y (+ (posn-y pel) Y-OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
                                           (if (and (>= x (- (posn-x pel) X-OFFSET)) (<= x (+ (posn-x pel) X-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
                                                 (set! SCORE (+ SCORE 1))
-                                                (play EATSOUND)
+                                                ;(play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
@@ -547,71 +396,57 @@
                 PEL-POS))
         (else #f)))
 
-; GHOST
+;;;;;;;;;;;;;;; 
+;;;; GHOST ;;;;
+;;;;;;;;;;;;;;;
+; handles ghost movement
+; calls ghost-maze-check to check for collisions with walls.
+; if no collisions are detected it returns an updated x/y position for the ghost,
+; otherwise it returns x/y positions to bounce the ghost back
 (define (ghost d w)
-  #|
-  (if (equal? d "x")
-      (if (< (third w) (first w))
-          (+ (third w) GHOST-SPEED)
-          (- (third w) GHOST-SPEED))
-      (if (< (fourth w) (second w))
-          (+ (fourth w) GHOST-SPEED)
-          (- (fourth w) GHOST-SPEED))))
-  |#
-  (begin
-    
-    (cond ((= GHOST-DIR 1);LEFT
-           (if (equal? d "x")
-               (if (equal? (ghost-maze-check (third w) (fourth w) L-DIR-WALLS) #t)
-                   (begin
-                     (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (+ (third w) 2));(third w)) added bounce back 
-                   (- (third w) GHOST-SPEED))
-               (fourth w)))
-          ((= GHOST-DIR 2);RIGHT
-           (if (equal? d "x")
-               (if (equal? (ghost-maze-check (third w) (fourth w) R-DIR-WALLS) #t)
-                   (begin
-                     (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (- (third w) 2));(third w))
-                   (+ (third w) GHOST-SPEED))
-               (fourth w)))
-          ((= GHOST-DIR 3);DOWN
-           (if (equal? d "x")
-               (third w)
-               (if (equal? (ghost-maze-check (third w) (fourth w) D-DIR-WALLS) #t)
-                   (begin
-                     (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (- (fourth w) 2));(fourth w))
-                   (+ (fourth w) GHOST-SPEED))))
-          ((= GHOST-DIR 4);UP
-           (if (equal? d "x")
-               (third w)
-               (if (equal? (ghost-maze-check (third w) (fourth w) U-DIR-WALLS) #t)
-                   (begin
-                     (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w)))
-                     (+ (fourth w) 2));(fourth w))
-                   (- (fourth w) GHOST-SPEED)))))))
-          ;(else 0))))
+  (cond ((= GHOST-DIR 1);LEFT
+         (if (equal? d "x")
+             (if (equal? (ghost-maze-check (third w) (fourth w) L-DIR-WALLS) #t)
+                 (begin
+                   (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w))) ;change ghost direction
+                   (+ (third w) 2)) ; bounce the ghost back
+                 (- (third w) GHOST-SPEED)) ; return updated x value
+             (fourth w))) ; return y value
+        ((= GHOST-DIR 2);RIGHT
+         (if (equal? d "x")
+             (if (equal? (ghost-maze-check (third w) (fourth w) R-DIR-WALLS) #t)
+                 (begin
+                   (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w))) ;change ghost direction
+                   (- (third w) 2)) ; bounce the ghost back
+                 (+ (third w) GHOST-SPEED)) ; return updated x value
+             (fourth w))) ; return y value
+        ((= GHOST-DIR 3);DOWN
+         (if (equal? d "x")
+             (third w) ; return x value
+             (if (equal? (ghost-maze-check (third w) (fourth w) D-DIR-WALLS) #t)
+                 (begin
+                   (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w))) ;change ghost direction
+                   (- (fourth w) 2)) ; bounce the ghost back
+                 (+ (fourth w) GHOST-SPEED)))) ; return updated y value
+        ((= GHOST-DIR 4);UP
+         (if (equal? d "x")
+             (third w) ; return x value
+             (if (equal? (ghost-maze-check (third w) (fourth w) U-DIR-WALLS) #t)
+                 (begin
+                   (set! GHOST-DIR (next-ghost-dir (third w) (fourth w) (first w) (second w))) ;change ghost direction
+                   (+ (fourth w) 2)) ; bounce the ghost back
+                 (- (fourth w) GHOST-SPEED)))))) ; return updated y value
 
 
-;; check which direction the ghost can move and pick one ;;
+;;;;;;;;;;;;;;;;;;;;;;;; 
+;;;; NEXT-GHOST-DIR ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; depending on the direction the ghost is moving and
+;; his location relative to Rack-Man determine which
+;; direction to move in. (this is called after the ghost hits a wall)
 (define (next-ghost-dir gx gy rx ry)
   (cond ((equal? GHOST-DIR 1);LEFT
          (begin
-           #|
-           (display "i made it")
-           (display "\n")
-           (display gx)
-           (display "\n")
-           (display gy)
-           (display "\n")
-           (display rx)
-           (display "\n")
-           (display ry)
-           (display "\n")
-           (display GHOST-DIR)
-           (display "\n")|#
          (if (<= rx gx)
              (if (>= ry gy);;pick between up and down
                  (cond ((equal? (ghost-maze-check gx gy D-DIR-WALLS) #f) 3); move down if possible
@@ -700,17 +535,27 @@
                        ((equal? (ghost-maze-check gx gy R-DIR-WALLS) #f) 2)); if not move right
                      )))))
 
-; GAME OVER MAN! GAME OVER!
+;;;;;;;;;;;;;;;;;;; 
+;;;; GAME-OVER ;;;;
+;;;;;;;;;;;;;;;;;;;
+;; checks for a collision between ghost and player
+;; -or-
+;; checks for all the pellets to be collected
+;; either result in the game ending, and start the high-score process
 (define (game-over w)
   (cond ((equal? w 0) #f)
         ((equal? (check-ghost (list (first w) (second w)) (list (third w) (fourth w))) #t)#t)
         ((equal? SCORE 268)(begin (set! WONGAME 1) #t))
         (else #f)))
 
+
+;;;;;;;;;;;;;;;;;;;;; 
+;;;; CHECK-GHOST ;;;;
+;;;;;;;;;;;;;;;;;;;;;
 ; check the position of the ghost relative to rack-man
 ; r -> '(x y) for rack-man
 ; g -> '(x y) for ghost
-; To account for the size of rack-man and the ghost, it recursively compares the next 10 values of the x/y
+; To account for the size of rack-man and the ghost, an offset is used to check positions
 (define (check-ghost r g)
   (cond ((equal? LEFT #t)
            (if (and (>= (first g) (- (first r) GHOST-CHECK)) (<= (first g) (first r)))
@@ -736,62 +581,11 @@
                     #t
                     #f)
                 #f))))
-  #|
-  (define (check-iter-x r_pos g_pos count)
-    (cond ((equal? LEFT #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-x r_pos (sub1 g_pos) (sub1 count)))
-               #f))
-          ((equal? RIGHT #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-x r_pos (add1 g_pos) (sub1 count)))
-               #f))
-          ((equal? UP #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-x r_pos (sub1 g_pos) (sub1 count)))
-               #f))
-          ((equal? DOWN #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-x r_pos (add1 g_pos) (sub1 count)))
-               #f))))
-  (define (check-iter-y r_pos g_pos count)
-    (cond ((equal? LEFT #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-y r_pos (sub1 g_pos) (sub1 count)))
-               #f))
-          ((equal? RIGHT #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-y r_pos (add1 g_pos) (sub1 count)))
-               #f))
-          ((equal? UP #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-y r_pos (sub1 g_pos) (sub1 count)))
-               #f))
-          ((equal? DOWN #t)
-           (if (> count 0)
-               (if (equal? r_pos g_pos)
-                   #t
-                   (check-iter-y r_pos (add1 g_pos) (sub1 count)))
-               #f))))
-  (cond ((and (equal? (check-iter-x (first r) (first g) 22) #t) (equal? (check-iter-y (second r) (second g) 22) #t)) #t)
-        (else #f)))
-  |#
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; GETHIGHSCORELINK ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; build the url for the high-score server
 (define(getHighScoresLink)
   (begin
     (set! hsURL (string-append ip (~a NAME)))
@@ -803,6 +597,9 @@
                 port->string))
   )
 
+;;;;;;;;;;;;;;;;;;;; 
+;;;; HIGH-SCORE ;;;;
+;;;;;;;;;;;;;;;;;;;;
 ; High Scores to save online
 ; 1. Gets the user's name from the terminal
 ; 2. Constructs the link for the high scores and sends it to the web server
@@ -824,11 +621,20 @@
                                 250 250
                                 (rectangle 500 500 "outline" "black"))))
 )
-; WORLD
+
+;;;;;;;;;;;;;;;;;; 
+;;;; BIG-BANG ;;;;
+;;;;;;;;;;;;;;;;;;
+;; defines the functions that run the world
+;; tick-handler      - runs every tick and updates the world sate
+;; draw-world        - takes in the world state and draws the appropriate scene
+;; key-press-handler - handles user inputs from keyboard
+;; game-over         - determines when to end the world
+;; high-score        - score tracking service, runs when game-over returns true
 (big-bang 0
           (on-tick tick-handler)
-          (to-draw myWorld)
-          (on-key react)
+          (to-draw draw-world)
+          (on-key key-press-handler)
           (name "Rack-Man v3.0")
           (stop-when game-over high-score))
 
