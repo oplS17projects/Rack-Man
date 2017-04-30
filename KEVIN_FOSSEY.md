@@ -167,7 +167,7 @@ If it is a list, the we know player has started the game, and our world state is
   
 The actual modification of the state is done through the ```tick-handler```.  
 ```  
-;;;;;;;;;;;;;;;;;;;;;;   
+;;;;;;;;;;;;;;;;;;;;;;    
 ;;;; TICK-HANDLER ;;;;  
 ;;;;;;;;;;;;;;;;;;;;;;  
 ; every tick (default 28/second),  
@@ -179,23 +179,23 @@ The actual modification of the state is done through the ```tick-handler```.
         w  
         (cond ((not (list? w)) w)  
               ;HANDLE ARROW KEY COMMANDS  
-              ((equal? LEFT #t)  
+              ((equal? ((rack-man 'get-left)) #t)  
                (if (equal? (maze-check (car w) (cadr w) L-DIR-WALLS) #t) ;; check for collision with maze  
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
                    ; move to the opposite end when passing through the left opening  
                    (cond ((<= (car w) 0) (list (+ (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))  
                          (else (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))  
-              ((equal? RIGHT #t)  
+              ((equal? ((rack-man 'get-right)) #t)  
                (if (equal? (maze-check (car w) (cadr w) R-DIR-WALLS) #t) ;; check for collision with maze  
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
                    ; move to the opposite end when passing through the right opening  
                    (cond ((>= (car w) 500) (list (- (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))  
                          (else (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))  
-              ((equal? DOWN #t)  
+              ((equal? ((rack-man 'get-down)) #t)  
                (if (equal? (maze-check (car w) (cadr w) D-DIR-WALLS) #t) ;; check for collision with maze  
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
                    (list (car w) (+ (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))  
-              ((equal? UP #t)  
+              ((equal? ((rack-man 'get-up)) #t)  
                (if (equal? (maze-check (car w) (cadr w) U-DIR-WALLS) #t) ;; check for collision with maze  
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))  
