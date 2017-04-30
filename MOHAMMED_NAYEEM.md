@@ -1,13 +1,14 @@
 # Rack-Man  
   
-## Kevin Fossey  
+## Mohammed Nayeem  
 ### April 30, 2017  
   
 # Overview  
   
-This project is a recreation of the classic arcade game "Pac-Man" using racket and its libraries.  
-Players control the titular Rack-Man to guide him through the maze, collecting pellets and avoiding the ghost.  
-Gather all the pellets to win.  
+This project is a resemblance of the classic game "Pac-Man". The game was written in Racket using many different libraries.
+
+The goal of the game is to collect all of the pellets and avoid being eaten by the ghost. 
+
   
 # Libraries Used  
 The code uses six libraries:
