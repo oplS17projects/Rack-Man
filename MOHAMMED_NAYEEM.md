@@ -37,7 +37,7 @@ UMass Lowell's COMP.3010 Organization of Programming languages course.
 ## 1. Object Orientation Approach  
 When we first started this project, we knew from the start we would need to use some sort of object oriented approach in order to save the state of different things of Rack-Man. We began the project by just using a global variable and changing it using '''set!'''. I was able to take this change this into an object to be used.
 
-'''
+```
 ;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;; RACK-MAN OBJECT ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,12 +89,12 @@ When we first started this project, we knew from the start we would need to use 
 			  (else (error "Unknown request "
 						   m))))
   dispatch)
-  '''
+ ```
 This piece of code keeps track of the score as well as the direction that Rack-Man is facing. When the player hits the right key, Rack-Man changes the booleans of each variable in the object. This code is very similar to the work we did in PS4 using the the example of bank accounts. 
 
-'''
+```
 (define rack-man (make-rackman 0 #t #f #f #f))
-'''
+```
 This next piece of code creates the actual object. It sets the score to 0 and sets the direction to go to left. The parameters read as left, right, up down. Only one of the parameters will show as true which is be the direction Rack-Man is going.
 ## 2. State Modification
 
