@@ -107,7 +107,101 @@ in the ```check-pel``` procedure I used the ```posn-x``` and ```posn-y``` getter
 ...  
 ```  
   
-## 4. ---  
+## 4. State Modification and Managment  
   
-## 5. ---  
+We used a number of different state variables to note player/ghost direction. However, a core piece of the games logic is based on the sate of the game "world".  
   
+The ```2htdp/universe``` library uses a state variable known as [WorldState](https://docs.racket-lang.org/teachpack/2htdpuniverse.html#%28tech._world._worldstate%29). This state is used to determine how to draw the scenes, and what to do on each tick.  
+  
+Below is the initialization of the games world.  
+```  
+;;;;;;;;;;;;;;;;;;   
+;;;; BIG-BANG ;;;;  
+;;;;;;;;;;;;;;;;;;  
+;; defines the functions that run the world  
+;; tick-handler      - runs every tick and updates the world sate  
+;; draw-world        - takes in the world state and draws the appropriate scene  
+;; key-press-handler - handles user inputs from keyboard  
+;; game-over         - determines when to end the world  
+;; high-score        - score tracking service, runs when game-over returns true  
+(big-bang 0  
+          (on-tick tick-handler)  
+          (to-draw draw-world)  
+          (on-key key-press-handler)  
+          (name "Rack-Man v3.0")  
+          (stop-when game-over high-score))  
+```  
+  
+The 0 after ```big-bang``` is the initial WorldState. This is passed to each of the functions listed in ```big-bang```. These function read in the world state, and determine the appropriate course of action, and return the world sate, either modified or left unchanged.  
+  
+For example, the ```draw-world``` function below.  
+```  
+;;;;;;;;;;;;;;;;;;;;    
+;;;; DRAW-WORLD ;;;;  
+;;;;;;;;;;;;;;;;;;;;  
+; take in the world state 't' and render the appropriate scene  
+(define (draw-world t) ;<-- the t-parameter is our WorldState  
+  (if (list? t)  
+      ;START GAME STATE -- if 't' is a list, it indicates the game running state, so we draw  
+      (begin  
+        (place-image RACKMAN;(scale/xy .1 .1 RACKMAN) ; place Rack-Man in the word at the given coordinates  
+                     (car t)  ; x  
+                     (cadr t) ; y  
+                     (place-image (scale/xy .2 .2 INKY) ; place the ghost in the world at the given coordinates  
+                                  (third t)  ; x  
+                                  (fourth t) ; y  
+                                  (place-image MAZE  
+                                               250 250  
+                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a SCORE) 24 "white") 87 505 SCENE)))))))  
+      ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen  
+      (place-image (text "Press Shift to Start!" 24 "white")  
+                   250 400 ; x y  
+                   (place-image SPLASH  
+                                250 250  
+                                SCENE))))  
+```  
+  
+This code takes the world state ```t``` as an argument, and first checks if it is a list or not. This check is performed because, the initial state of the world is just 0, not a list, and so by determing the state is not a list, we know to draw the initial splash screen for the game using the ```2htdp/image``` library.  
+  
+If it is a list, the we know player has started the game, and our world state is now in the form ```'( Player X, Player Y, Ghost X, Ghost Y)```. So ```draw-world``` now can take this state and draw the scene and place the player and ghost in their correct place.  
+  
+The actual modification of the state is done through the ```tick-handler```.  
+```  
+;;;;;;;;;;;;;;;;;;;;;;   
+;;;; TICK-HANDLER ;;;;  
+;;;;;;;;;;;;;;;;;;;;;;  
+; every tick (default 28/second),  
+;  check the state for the key presses  
+;  if the state is true, move rackman in that direction by updating his X,Y cooridantes  
+(define (tick-handler w)  
+  (begin  
+    (if (equal? w 0)  
+        w  
+        (cond ((not (list? w)) w)  
+              ;HANDLE ARROW KEY COMMANDS  
+              ((equal? LEFT #t)  
+               (if (equal? (maze-check (car w) (cadr w) L-DIR-WALLS) #t) ;; check for collision with maze  
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
+                   ; move to the opposite end when passing through the left opening  
+                   (cond ((<= (car w) 0) (list (+ (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))  
+                         (else (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))  
+              ((equal? RIGHT #t)  
+               (if (equal? (maze-check (car w) (cadr w) R-DIR-WALLS) #t) ;; check for collision with maze  
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
+                   ; move to the opposite end when passing through the right opening  
+                   (cond ((>= (car w) 500) (list (- (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))  
+                         (else (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))  
+              ((equal? DOWN #t)  
+               (if (equal? (maze-check (car w) (cadr w) D-DIR-WALLS) #t) ;; check for collision with maze  
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
+                   (list (car w) (+ (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))  
+              ((equal? UP #t)  
+               (if (equal? (maze-check (car w) (cadr w) U-DIR-WALLS) #t) ;; check for collision with maze  
+                   (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))  
+                   (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))  
+              (else w)))))  
+```  
+  
+This is the main driver for the game. On every tick (which is running at 28 ticks/second, the default), it takes in the world state ```w``` and checks the player movement states (UP,DOWN,LEFT,RIGHT) to determine which direction the player is moving. It then updates the WorldState to reflect the movement of the player, and passes off to the ```ghost``` function to update the ghosts position.  
+  
+This the function returns an updated WorldState, which is read by ```draw-world``` so the scene can be drawn, and read again by the next tick and so on until the win or lose conditions are met.  
