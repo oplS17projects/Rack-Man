@@ -18,13 +18,7 @@
 (require "coords.rkt")
 
 ; GLOBAL VARIABLES
-(define LEFT #f)
-(define RIGHT #f)
-(define DOWN #f)
-(define UP #f)
 (define NAME "RackManPlayer")
-(define SCORE 0)
-(define NEXT-DIR 0)
 (define START #f)
 (define SPEED 2)
 (define GHOST-SPEED 2)
@@ -35,7 +29,6 @@
 (define GHOSTY-OFFSET 10)
 (define X-OFFSET 10)
 (define Y-OFFSET 10)
-(define OPEN 0)
 (define hsURL "")
 (define WONGAME 0)
 (define website "http://107.170.57.126")
@@ -55,6 +48,62 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define PEL-POS (build-pel-xy 25 35)) ;; Makes the call to build the list of posn objects for the pellets
+
+;;;;;;;;;;;;;;;;;;;;;;; 
+;;;; RACK-MAN OBJECT ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
+;CREATES LEFT, RIGHT, UP, DOWN, AND SCORE VARIABLES AND STORES IN THE OBJECT
+(define (make-rackman scores go-left go-right go-up go-down)
+(define (set-left)
+    (begin (set! go-left #t)
+           (set! go-right #f)
+           (set! go-up #f)
+           (set! go-down #f)))
+(define (set-right)
+    (begin (set! go-left #f)
+           (set! go-right #t)
+           (set! go-up #f)
+           (set! go-down #f)))
+(define (set-up)
+    (begin (set! go-left #f)
+           (set! go-right #f)
+           (set! go-up #t)
+           (set! go-down #f)))
+(define (set-down)
+    (begin (set! go-left #f)
+           (set! go-right #f)
+           (set! go-up #f)
+           (set! go-down #t)))
+		   
+  (define (addScore)
+    (set! scores (+ scores 1)))
+  (define (getScore)
+    scores)
+   (define (get-left)
+    go-left)
+   (define (get-right)
+    go-right)
+   (define (get-up)
+    go-up)
+   (define (get-down)
+    go-down)
+  
+  (define (dispatch m)
+    (cond ((eq? m 'set-left) set-left)
+          ((eq? m 'set-right) set-right)
+          ((eq? m 'set-up) set-up)
+          ((eq? m 'set-down) set-down)
+          ((eq? m 'addScore) addScore)
+          ((eq? m 'getScore) getScore)
+          ((eq? m 'get-left) get-left)
+          ((eq? m 'get-right) get-right)
+          ((eq? m 'get-up) get-up)
+          ((eq? m 'get-down) get-down)
+          (else (error "Unknown request "
+                       m)))
+)
+  dispatch)
+(define rack-man (make-rackman 0 #t #f #f #f))
 
 ;;;;;;;;;;;;;;;;;;;;;;; 
 ;;;; BUILD-PEL-IMG ;;;;
@@ -88,7 +137,7 @@
                                   (fourth t) ; y
                                   (place-image MAZE
                                                250 250
-                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a SCORE) 24 "white") 87 505 SCENE)))))))
+                                               (place-images PEL-IMG PEL-POS (place-image (text "Score: " 24 "white") 40 505 (place-image (text (~a ((rack-man 'getScore))) 24 "white") 87 505 SCENE)))))))
       ;SPLASH SCREEN STATE -- if 't' is not a list, it indicates the initial world state, so display the splash screen
       (place-image (text "Press Shift to Start!" 24 "white")
                    250 400 ; x y
@@ -104,7 +153,7 @@
 (define (key-press-handler w x)
   (cond ((key=? x "shift") (if(equal? START #f)
                               (begin
-                                ;(play THEME)
+                                (play THEME)
                                 (set! START #t)
                                 (list 250 374 250 186)) ;; starting position of RackMan and Ghost
                               w))
@@ -117,31 +166,19 @@
                               w))
         ((key=? x "left") (begin
                             (set! RACKMAN (bitmap/file "./rackman_left.png"))
-                            (set! LEFT #t)
-                            (set! RIGHT #f)
-                            (set! DOWN #f)
-                            (set! UP #f)
+                            ((rack-man 'set-left))
                             w))
         ((key=? x "right") (begin
                              (set! RACKMAN (bitmap/file "./rackman_right.png"))
-                             (set! LEFT #f)
-                             (set! RIGHT #t)
-                             (set! DOWN #f)
-                             (set! UP #f)
+                             ((rack-man 'set-right))
                              w))
         ((key=? x "up") (begin
                           (set! RACKMAN (bitmap/file "./rackman_up.png"))
-                          (set! LEFT #f)
-                          (set! RIGHT #f)
-                          (set! DOWN #f)
-                          (set! UP #t)
+                          ((rack-man 'set-up))
                           w))
         ((key=? x "down") (begin
                             (set! RACKMAN (bitmap/file "./rackman_down.png"))
-                            (set! LEFT #f)
-                            (set! RIGHT #f)
-                            (set! DOWN #t)
-                            (set! UP #f)
+                            ((rack-man 'set-down))
                             w))
         (else w))) ; any other key press, just return an unaltered world state
 
@@ -157,23 +194,23 @@
         w
         (cond ((not (list? w)) w)
               ;HANDLE ARROW KEY COMMANDS
-              ((equal? LEFT #t)
+              ((equal? ((rack-man 'get-left)) #t)
                (if (equal? (maze-check (car w) (cadr w) L-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    ; move to the opposite end when passing through the left opening
                    (cond ((<= (car w) 0) (list (+ (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))
                          (else (list (- (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))
-              ((equal? RIGHT #t)
+              ((equal? ((rack-man 'get-right)) #t)
                (if (equal? (maze-check (car w) (cadr w) R-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    ; move to the opposite end when passing through the right opening
                    (cond ((>= (car w) 500) (list (- (car w) 495) (cadr w) (ghost "x" w) (ghost "y" w)))
                          (else (list (+ (car w) SPEED) (cadr w) (ghost "x" w) (ghost "y" w))))))
-              ((equal? DOWN #t)
+              ((equal? ((rack-man 'get-down)) #t)
                (if (equal? (maze-check (car w) (cadr w) D-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (+ (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
-              ((equal? UP #t)
+              ((equal? ((rack-man 'get-up)) #t)
                (if (equal? (maze-check (car w) (cadr w) U-DIR-WALLS) #t) ;; check for collision with maze
                    (list (car w) (cadr w) (ghost "x" w) (ghost "y" w))
                    (list (car w) (- (cadr w) SPEED) (ghost "x" w) (ghost "y" w))))
@@ -338,56 +375,56 @@
 ;;; check if rackmans position matches the position of any pellets,
 ;;; if it does, remove that pellet
 (define (check-pel x y)
-  (cond ((equal? LEFT #t) ;#f)
+  (cond ((equal? ((rack-man 'get-left)) #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ((and (<= x (+ (posn-x pel) X-OFFSET)) (>= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
                                           (if (and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (+ (posn-y pel) Y-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
-                                                (set! SCORE (+ SCORE 1))
+                                                ((rack-man 'addScore))
                                                 ;(play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
                 #f
                 PEL-POS))
-        ((equal? RIGHT #t) ;#f)
+        ((equal? ((rack-man 'get-right)) #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ((and (>= x (- (posn-x pel) X-OFFSET)) (<= x (posn-x pel))) ;; check if rackman is lined up along X with any pellets
                                           (if (and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (+ (posn-y pel) Y-OFFSET))) ;; check if rackman is is lined up along Y with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
-                                                (set! SCORE (+ SCORE 1))
+                                                ((rack-man 'addScore))
                                                 ;(play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
                 #f
                 PEL-POS))
-        ((equal? DOWN #t) ;#f)
+        ((equal? ((rack-man 'get-down)) #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ((and (>= y (- (posn-y pel) Y-OFFSET)) (<= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
                                           (if (and (>= x (- (posn-x pel) X-OFFSET)) (<= x (+ (posn-x pel) X-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
-                                                (set! SCORE (+ SCORE 1))
+                                                ((rack-man 'addScore))
                                                 ;(play EATSOUND)
                                                 #t)
                                               #f))
                                          (else #f)))
                 #f
                 PEL-POS))
-        ((equal? UP #t) ;#f)
+        ((equal? ((rack-man 'get-up)) #t) ;#f)
          (foldl (lambda (pel res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
                                          ((and (<= y (+ (posn-y pel) Y-OFFSET)) (>= y (posn-y pel))) ;; check if rackman is is lined up along Y with any pellets
                                           (if (and (>= x (- (posn-x pel) X-OFFSET)) (<= x (+ (posn-x pel) X-OFFSET))) ;; check if rackman is lined up along X with any pellets
                                               (begin
                                                 (set! PEL-POS (remove pel PEL-POS))
                                                 (set! PEL-IMG (remove PELLET PEL-IMG))
-                                                (set! SCORE (+ SCORE 1))
+                                                ((rack-man 'addScore))
                                                 ;(play EATSOUND)
                                                 #t)
                                               #f))
@@ -545,7 +582,7 @@
 (define (game-over w)
   (cond ((equal? w 0) #f)
         ((equal? (check-ghost (list (first w) (second w)) (list (third w) (fourth w))) #t)#t)
-        ((equal? SCORE 268)(begin (set! WONGAME 1) #t))
+        ((equal? ((rack-man 'getScore)) 268)(begin (set! WONGAME 1) #t))
         (else #f)))
 
 
@@ -557,25 +594,25 @@
 ; g -> '(x y) for ghost
 ; To account for the size of rack-man and the ghost, an offset is used to check positions
 (define (check-ghost r g)
-  (cond ((equal? LEFT #t)
+  (cond ((equal? ((rack-man 'get-left)) #t)
            (if (and (>= (first g) (- (first r) GHOST-CHECK)) (<= (first g) (first r)))
                 (if (and (>= (second g) (- (second r) GHOST-CHECK)) (<= (second g) (+ (second r) GHOST-CHECK)))
                     #t
                     #f)
                 #f))
-        ((equal? RIGHT #t)
+        ((equal? ((rack-man 'get-right)) #t)
          (if (and (<= (first g) (+ (first r) GHOST-CHECK)) (>= (first g) (first r)))
                 (if (and (>= (second g) (- (second r) GHOST-CHECK)) (<= (second g) (+ (second r) GHOST-CHECK)))
                     #t
                     #f)
                 #f))
-        ((equal? UP #t)
+        ((equal? ((rack-man 'get-up)) #t)
          (if (and (>= (second g) (- (second r) GHOST-CHECK)) (<= (second g) (second r)))
                 (if (and (>= (first g) (- (first r) GHOST-CHECK)) (<= (first g) (+ (first r) GHOST-CHECK)))
                     #t
                     #f)
                 #f))
-        ((equal? DOWN #t)
+        ((equal? ((rack-man 'get-down)) #t)
          (if (and (<= (second g) (+ (second r) GHOST-CHECK)) (>= (second g) (second r)))
                 (if (and (>= (first g) (- (first r) GHOST-CHECK)) (<= (first g) (+ (first r) GHOST-CHECK)))
                     #t
@@ -591,7 +628,7 @@
     (set! hsURL (string-append ip (~a NAME)))
     (set! hsURL (string-append hsURL addAnd))
     (set! hsURL (string-append hsURL scoreParam))
-    (set! hsURL (string-append (~a hsURL SCORE)))
+    (set! hsURL (string-append (~a hsURL ((rack-man 'getScore)))))
     (call/input-url (string->url hsURL)
                 get-pure-port
                 port->string))
