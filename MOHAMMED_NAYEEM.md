@@ -96,7 +96,50 @@ This piece of code keeps track of the score as well as the direction that Rack-M
 (define rack-man (make-rackman 0 #t #f #f #f))
 ```
 This next piece of code creates the actual object. It sets the score to 0 and sets the direction to go to left. The parameters read as left, right, up down. Only one of the parameters will show as true which is be the direction Rack-Man is going.
-## 2. State Modification
 
-## 3. 
+## 2. State Modification
+```
+        ((key=? x "left") (begin
+                            (set! RACKMAN (bitmap/file "./rackman_left.png"))
+                            ((rack-man 'set-left))
+                            w))
+        ((key=? x "right") (begin
+                             (set! RACKMAN (bitmap/file "./rackman_right.png"))
+                             ((rack-man 'set-right))
+                             w))
+        ((key=? x "up") (begin
+                          (set! RACKMAN (bitmap/file "./rackman_up.png"))
+                          ((rack-man 'set-up))
+                          w))
+        ((key=? x "down") (begin
+                            (set! RACKMAN (bitmap/file "./rackman_down.png"))
+                            ((rack-man 'set-down))
+                            w))
+        (else w))) ; any other key press, just return an unaltered world state
+```
+
+This piece of code just changes the state of Rack-Man by updating the boolean that Rack-Man is going in. When ```(key=? x "right")``` is true, the rack-man object sets all the variables except up to false. Kevin's code then updates the list with rackman's posotion so it actually moves up.
+There was also state modification in the creation of the object.
+
+## 3. Constructing a link using various strings
+The high scores was what I wanted to do to include an external source. I decided that I wanted to create a page using PHP and MYSQL for the database.
+```
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; GETHIGHSCORELINK ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; build the url for the high-score server
+(define(getHighScoresLink)
+  (begin
+    (set! hsURL (string-append ip (~a NAME)))
+    (set! hsURL (string-append hsURL addAnd))
+    (set! hsURL (string-append hsURL scoreParam))
+    (set! hsURL (string-append (~a hsURL ((rack-man 'getScore)))))
+    (call/input-url (string->url hsURL)
+                get-pure-port
+                port->string))
+  )
+```
+I'm not sure if there is an easier way of doing this but from previous assignments I decided to do it like this. 
+This function takes a global variable named ```hsURL``` and combines it with string ip and another variable which is turned into a string named NAME. It is then appended with ```addAnd``` which is just a &. The next thing that is add is a string named ```scoreParam``` which just holds the string ```score=``` for the url. The final thing that is added is ```((rack-man 'getScore))```. This pulls the score from the rack-man object and places it to the end of the link. 
+The call/input-url function then takes ```hsURL``` and then opens it within a browser so the player can view it.
 
