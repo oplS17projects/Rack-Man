@@ -7,7 +7,7 @@
   
 This project is a resemblance of the classic game "Pac-Man". The game was written in Racket using many different libraries.
 
-The goal of the game is to collect all of the pellets and avoid being eaten by the ghost. 
+The goal of the game is to collect all the pellets and avoid being eaten by the ghost. 
 
   
 # Libraries Used  
@@ -22,7 +22,7 @@ The code uses six libraries:
          net/sendurl)  
 ```  
   
-* The ```2htdp/universe``` library allows us to create a enviroment where we are able to manipulate certain objects based on our logic.  
+* The ```2htdp/universe``` library allows us to create an environment where we can manipulate certain objects based on our logic.  
 * The ```2htdp/image``` library provides us with the ability to create images with different properties.
 * The ```lang/posn``` library is used to create position objects for graphics objects in the game  
 * The ```RSound``` library is used play sound from a file within the game.
@@ -35,7 +35,7 @@ Here is a discussion of the most essential procedures, including a description o
 UMass Lowell's COMP.3010 Organization of Programming languages course.  
   
 ## 1. Object Orientation Approach  
-When we first started this project, we knew from the start we would need to use some sort of object oriented approach in order to save the state of different things of Rack-Man. We began the project by just using a global variable and changing it using '''set!'''. I was able to take this change this into an object to be used.
+When we first started this project, we knew from the start we would need to use some sort of object oriented approach to save the state of different things of Rack-Man. We began the project by just using a global variable and changing it using '''set!'''. I cleaned up the code by converting it over to an object.
 
 ```
 ;;;;;;;;;;;;;;;;;;;;;;; 
@@ -90,7 +90,7 @@ When we first started this project, we knew from the start we would need to use 
 						   m))))
   dispatch)
  ```
-This piece of code creates five different variables within the object. There are many setter and getter function that I created that was used to change the direction of Rack-Man as well as being able to add a point when a pellet is eatten. This code is very similar to what we had to do in PS4 where we had to change the way the bank account worked with a secret password. 
+This piece of code creates five different variables within the object. There are many setter and getter function that I created that was used to change the direction of Rack-Man as well as being able to add a point when a pellet is eaten. This code is like what we had to do in PS4 where we had to change the way the bank account worked with a secret password. 
 
 ```
 (define rack-man (make-rackman 0 #t #f #f #f))
@@ -118,11 +118,11 @@ This next piece of code holds the object named as rack-man. It sets the score to
         (else w))) ; any other key press, just return an unaltered world state
 ```
 
-This piece of code just changes the state of Rack-Man by updating the boolean that Rack-Man is going in. When ```(key=? x "right")``` is true, the rack-man object sets all the variables except up to false. Kevin's code then updates the list with rackman's posotion so it actually moves up.
+This piece of code just changes the state of Rack-Man by updating the Boolean that Rack-Man is going in. When ```(key=? x "right")``` is true, the rack-man object sets all the variables except up to false. Kevin's code then updates the list with rackman's position so it moves up.
 There was also state modification in the creation of the object.
 
 ## 3. Constructing a link using various strings
-The high scores was what I wanted to do to include an external source. I decided that I wanted to create a page using PHP and MYSQL for the database.
+The high scores were what I wanted to do to include an external source. I decided that I wanted to create a page using PHP and MYSQL for the database.
 ```
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; GETHIGHSCORELINK ;;;;
@@ -145,10 +145,10 @@ This function takes a global variable named ```hsURL``` and combines it with str
 
 The call/input-url function then takes ```hsURL``` and then opens it within a browser so the player can view it.
 
-I was very happy that I got to do this because it gave me the opportunity to not only learn a bit about another langugage but also being able to learn about the things needed to set up things server sided.
+I was very happy that I got to do this because it gave me the opportunity to not only learn a bit about another language but also being able to learn about the things needed to set up things server sided.
 
 ## 4. Foldl
-When we first started working on the maze, we couldn't come up with a solution on how to get the maze working. We knew we'd have the map out the entire maze (very big pain in the butt) but we didn't know what approach we would take in order to complete it. At first Kevin recommended we use recurion like all of the other functions he created in order to make it work. We looked around and I came up with the idea to use foldl. We'd essentionally create a lists of all of the walls in each direction and then use fold to determine if it's within the list.
+When we first started working on the maze, we couldn't come up with a solution on how to get the maze working. We knew we'd have the map out the entire maze (very big pain in the butt) but we didn't know what approach we would take to complete it. At first Kevin recommended we use recursion like all the other functions he created to make it work. We looked around and I came up with the idea to use foldl. We'd essentially create some lists of all the walls in each direction and then use fold to determine if it's within the list.
 ```
 ((equal? lst R-DIR-WALLS) ;#f)
            (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
