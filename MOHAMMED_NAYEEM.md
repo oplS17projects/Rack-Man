@@ -140,6 +140,8 @@ The high scores was what I wanted to do to include an external source. I decided
   )
 ```
 I'm not sure if there is an easier way of doing this but from previous assignments I decided to do it like this. 
+
 This function takes a global variable named ```hsURL``` and combines it with string ip and another variable which is turned into a string named NAME. It is then appended with ```addAnd``` which is just a &. The next thing that is add is a string named ```scoreParam``` which just holds the string ```score=``` for the url. The final thing that is added is ```((rack-man 'getScore))```. This pulls the score from the rack-man object and places it to the end of the link. 
+
 The call/input-url function then takes ```hsURL``` and then opens it within a browser so the player can view it.
 
