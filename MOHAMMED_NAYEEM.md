@@ -90,12 +90,12 @@ When we first started this project, we knew from the start we would need to use 
 						   m))))
   dispatch)
  ```
-This piece of code keeps track of the score as well as the direction that Rack-Man is facing. When the player hits the right key, Rack-Man changes the booleans of each variable in the object. This code is very similar to the work we did in PS4 using the the example of bank accounts. 
+This piece of code creates five different variables within the object. There are many setter and getter function that I created that was used to change the direction of Rack-Man as well as being able to add a point when a pellet is eatten. This code is very similar to what we had to do in PS4 where we had to change the way the bank account worked with a secret password. 
 
 ```
 (define rack-man (make-rackman 0 #t #f #f #f))
 ```
-This next piece of code creates the actual object. It sets the score to 0 and sets the direction to go to left. The parameters read as left, right, up down. Only one of the parameters will show as true which is be the direction Rack-Man is going.
+This next piece of code holds the object named as rack-man. It sets the score to 0 and sets the direction to go to left. The parameters read as left, right, up down. Only one of the parameters will show as true which is be the direction Rack-Man is going.
 
 ## 2. State Modification
 ```
@@ -144,4 +144,34 @@ I'm not sure if there is an easier way of doing this but from previous assignmen
 This function takes a global variable named ```hsURL``` and combines it with string ip and another variable which is turned into a string named NAME. It is then appended with ```addAnd``` which is just a &. The next thing that is add is a string named ```scoreParam``` which just holds the string ```score=``` for the url. The final thing that is added is ```((rack-man 'getScore))```. This pulls the score from the rack-man object and places it to the end of the link. 
 
 The call/input-url function then takes ```hsURL``` and then opens it within a browser so the player can view it.
+
+I was very happy that I got to do this because it gave me the opportunity to not only learn a bit about another langugage but also being able to learn about the things needed to set up things server sided.
+
+## 4. Foldl
+When we first started working on the maze, we couldn't come up with a solution on how to get the maze working. We knew we'd have the map out the entire maze (very big pain in the butt) but we didn't know what approach we would take in order to complete it. At first Kevin recommended we use recurion like all of the other functions he created in order to make it work. We looked around and I came up with the idea to use foldl. We'd essentionally create a lists of all of the walls in each direction and then use fold to determine if it's within the list.
+```
+((equal? lst R-DIR-WALLS) ;#f)
+           (foldl (lambda (wall res) (cond ((equal? res #t) #t) ;; if the last result was #t then return #t again
+                                           ((and (>= x (- (first wall) X-OFFSET)) (<= x (first wall))) ;; check if rackman is lined up along X with any walls
+                                            (if (and (>= y (- (second wall) Y-OFFSET)) (<= y (+ (fourth wall) Y-OFFSET))) ;; check if rackman is is lined up along Y with any walls
+                                                (begin
+                                                  (when (equal? DEBUGGER 1) 
+                                                    (begin(display "RIGHT: (")
+                                                          (display (first wall))
+                                                          (display " ")
+                                                          (display (second wall))
+                                                          (display " ")
+                                                          (display (third wall))
+                                                          (display " ")
+                                                          (display (fourth wall))
+                                                          (display ")")
+                                                          (display " \n")))
+                                                  #t)
+                                                #f))
+                                           (else #f)))
+                  #f
+                  lst))
+```
+
+After agreeing on using fold, Kevin came up with the code to make the maze walls work. This same logic was then implemented into the ghost check too which uses fold as well.
 
